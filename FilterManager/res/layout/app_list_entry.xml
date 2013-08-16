@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="64sp"
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp"
+>
+	<ImageView
+		android:id="@+id/app_list_entry_icon"
+		android:layout_height="64sp"
+		android:layout_width="64sp"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentBottom="true"
+		android:paddingRight="4dp"
+	/>
+
+	<TextView
+		android:id="@+id/app_list_entry_title"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@id/app_list_entry_icon"
+		android:textSize="24sp"
+		android:paddingBottom="4dp"
+	/>
+
+	<TextView
+		android:id="@+id/app_list_entry_subtitle"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_below="@id/app_list_entry_title"
+		android:layout_toRightOf="@id/app_list_entry_icon"
+		android:textSize="16sp"
+	/>
+
+	<TextView
+		android:id="@+id/app_list_entry_status"
+		android:layout_width="76sp"
+		android:layout_height="64sp"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentBottom="true"
+		android:textSize="28sp"
+	/>
+</RelativeLayout>

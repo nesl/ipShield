@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context=".AppDetailFragment"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp"
+	android:paddingLeft="4dp"
+	android:paddingRight="4dp"
+>
+	<!-- Header {{{ -->
+	<RelativeLayout
+		android:id="@+id/fragment_app_detail_header"
+		android:layout_width="match_parent"
+		android:layout_height="64sp"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp"
+	>
+		<ImageView
+			android:id="@+id/fragment_app_detail_icon"
+			android:layout_height="64sp"
+			android:layout_width="64sp"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentBottom="true"
+			android:paddingRight="4dp"
+		/>
+
+		<TextView
+			android:id="@+id/fragment_app_detail_title"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_alignParentTop="true"
+			android:layout_toRightOf="@id/fragment_app_detail_icon"
+			android:textSize="24sp"
+			android:paddingBottom="4dp"
+		/>
+
+		<TextView
+			android:id="@+id/fragment_app_detail_subtitle"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_below="@id/fragment_app_detail_title"
+			android:layout_toRightOf="@id/fragment_app_detail_icon"
+			android:textSize="16sp"
+		/>
+
+		<TextView
+			android:id="@+id/fragment_app_detail_status"
+			android:layout_width="76sp"
+			android:layout_height="64sp"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentBottom="true"
+			android:textSize="28sp"
+		/>
+	</RelativeLayout>
+	<!-- }}} -->
+
+	<!--<ListView
+		android:id="@+id/fragment_app_detail_inferences"
+		android:layout_width="match_parent"
+		android:layout_height="128sp"
+		android:layout_below="@id/fragment_app_detail_header"
+	/>-->
+
+	<ScrollView
+		android:id="@+id/fragment_app_detail_sensors_scroll"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/fragment_app_detail_header"
+		android:layout_above="@+id/fragment_app_detail_apply_button_frame"
+		android:scrollbars="vertical"
+	>
+		<LinearLayout
+			android:id="@+id/fragment_app_detail_sensors"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+		/>
+	</ScrollView>
+
+	<LinearLayout
+		android:id="@id/fragment_app_detail_apply_button_frame"
+		android:layout_width="match_parent"
+		android:layout_height="64dp"
+		android:layout_alignParentBottom="true"
+	>
+		<Button
+			android:id="@+id/fragment_app_detail_apply_button"
+			android:layout_width="match_parent"
+			android:layout_height="64dp"
+			android:text="Apply"
+		/>
+	</LinearLayout>
+</RelativeLayout>
