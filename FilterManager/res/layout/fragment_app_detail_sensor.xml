@@ -3,9 +3,20 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:paddingTop="12dp"
-	android:paddingBottom="12dp"
+	android:paddingBottom="28dp"
 	android:orientation="vertical"
 >
+	<View
+		android:layout_width="fill_parent"
+		android:layout_height="1dip"
+		android:background="#33000000"
+	/>
+	<View
+		android:layout_width="fill_parent"
+		android:layout_height="8dp"
+		android:background="#00000000"
+	/>
+
 	<!-- Main controls {{{ -->
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -18,7 +29,9 @@
 			android:layout_weight=".65"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
-			android:textSize="18sp"
+			android:textSize="22sp"
+			android:textStyle="bold"
+			android:textColor="#ffcc0000"
 		/>
 
 		<Spinner
@@ -60,6 +73,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:editable="true"
+				android:inputType="number"
 				android:digits="-0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -89,6 +103,7 @@
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant1_value"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
+				android:inputType="number"
 				android:editable="true"
 				android:digits="-0123456789."
 				android:maxLength="@string/constant_max_length"
@@ -119,6 +134,7 @@
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant2_value"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
+				android:inputType="number"
 				android:editable="true"
 				android:digits="2123456789."
 				android:maxLength="@string/constant_max_length"
@@ -149,6 +165,7 @@
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant3_value"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
+				android:inputType="number"
 				android:editable="true"
 				android:digits="-0123456789."
 				android:maxLength="@string/constant_max_length"
@@ -180,6 +197,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:editable="true"
+				android:inputType="number"
 				android:digits="-0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -207,6 +225,7 @@
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:hint="@string/days"
+				android:inputType="number"
 				android:digits="0123456789"
 				android:maxLength="2"
 			/>
@@ -223,6 +242,7 @@
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:hint="@string/hours"
+				android:inputType="number"
 				android:digits="0123456789"
 				android:maxLength="2"
 			/>
@@ -239,6 +259,7 @@
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:hint="@string/minutes"
+				android:inputType="number"
 				android:digits="0123456789"
 				android:maxLength="2"
 			/>
@@ -255,6 +276,7 @@
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:hint="@string/seconds"
+				android:inputType="number"
 				android:digits="0123456789"
 				android:maxLength="2"
 			/>
@@ -271,6 +293,7 @@
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:hint="@string/milliseconds"
+				android:inputType="number"
 				android:digits="0123456789"
 				android:maxLength="3"
 			/>
@@ -303,6 +326,7 @@
 				android:visibility="visible"
 				android:editable="true"
 				android:hint="@string/mean"
+				android:inputType="number"
 				android:digits="0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -315,6 +339,7 @@
 				android:visibility="visible"
 				android:editable="true"
 				android:hint="@string/variance"
+				android:inputType="number"
 				android:digits="0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -327,6 +352,7 @@
 				android:visibility="gone"
 				android:editable="true"
 				android:hint="@string/unif_min"
+				android:inputType="number"
 				android:digits="0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -339,6 +365,7 @@
 				android:visibility="gone"
 				android:editable="true"
 				android:hint="@string/unif_max"
+				android:inputType="number"
 				android:digits="0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -351,6 +378,7 @@
 				android:visibility="gone"
 				android:editable="true"
 				android:hint="@string/lambda"
+				android:inputType="number"
 				android:digits="0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
@@ -362,7 +390,7 @@
 			android:id="@+id/fragment_app_detail_sensor_action_arguments_timing"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingTop="12dp"
+			android:paddingTop="18dp"
 			android:orientation="vertical"
 			android:visibility="gone"
 		>
@@ -383,7 +411,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_sunday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="S"
 				/>
 
@@ -391,7 +419,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_monday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="M"
 				/>
 
@@ -399,7 +427,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_tuesday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="T"
 				/>
 
@@ -407,7 +435,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_wednesday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="W"
 				/>
 
@@ -415,7 +443,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_thursday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="Th"
 				/>
 
@@ -423,7 +451,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_friday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="F"
 				/>
 
@@ -431,7 +459,7 @@
 					android:id="@+id/fragment_app_detail_sensor_action_arguments_timing_saturday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:paddingRight="4dp"
+					android:paddingRight="2dp"
 					android:text="Sa"
 				/>
 			</LinearLayout>
@@ -456,6 +484,7 @@
 					android:layout_height="match_parent"
 					android:editable="true"
 					android:hint="@string/hours"
+					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
 				/>
@@ -472,6 +501,7 @@
 					android:layout_height="match_parent"
 					android:editable="true"
 					android:hint="@string/minutes"
+					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
 				/>
@@ -490,6 +520,7 @@
 					android:layout_height="match_parent"
 					android:editable="true"
 					android:hint="@string/hours"
+					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
 				/>
@@ -506,6 +537,7 @@
 					android:layout_height="match_parent"
 					android:editable="true"
 					android:hint="@string/minutes"
+					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
 				/>
@@ -516,15 +548,4 @@
 	</LinearLayout>
 
 	<!-- }}} -->
-
-	<View
-		android:layout_width="fill_parent"
-		android:layout_height="8dp"
-		android:background="#00000000"
-	/>
-	<View
-		android:layout_width="fill_parent"
-		android:layout_height="1dip"
-		android:background="#33000000"
-	/>
 </LinearLayout>

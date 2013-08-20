@@ -4,7 +4,10 @@ package edu.ucla.ee.nesl.privacyfilter.filtermanager;
 
 import java.util.ArrayList;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,6 +72,15 @@ public class AppDetailFragment extends Fragment {
 			}
 		}
 
+		private static int str2int (CharSequence chs) {
+			String str = new String((String) chs.toString());
+			if (str.equals("")) {
+				return 0;
+			} else {
+				return Integer.parseInt(str);
+			}
+		}
+
 		// }}}
 
 	// SensorTypeRule {{{
@@ -79,6 +91,8 @@ public class AppDetailFragment extends Fragment {
 
 	public class SensorTypeRule {
 		private static final int MAX_CONSTANTS = 5;
+
+		// Protobuf enums {{{
 
 		private final FirewallConfigMessage.Action.ActionType[] PROTOBUF_ACTIONS = {
 			FirewallConfigMessage.Action.ActionType.ACTION_PASSTHROUGH,
@@ -93,6 +107,8 @@ public class AppDetailFragment extends Fragment {
 			FirewallConfigMessage.Perturb.DistributionType.UNIFORM,
 			FirewallConfigMessage.Perturb.DistributionType.EXPONENTIAL
 		};
+
+		// }}}
 
 		private SensorType sensorType;
 
@@ -122,7 +138,7 @@ public class AppDetailFragment extends Fragment {
 		private TextView perturbLambdaView;
 
 		private ViewGroup timingView;
-		private CheckBox[] daysOfWeekView;
+		private CheckBox[] dayOfWeekViews;
 		private TextView fromHourView;
 		private TextView toHourView;
 		private TextView fromMinuteView;
@@ -132,6 +148,10 @@ public class AppDetailFragment extends Fragment {
 
 		protected SensorTypeRule (SensorType sensorType) {
 			this.sensorType = sensorType;
+		}
+
+		public SensorType getSensorType() {
+			return sensorType;
 		}
 
 		private void setupPerturbSpinner () { // {{{
@@ -207,7 +227,7 @@ public class AppDetailFragment extends Fragment {
 
 			TextView name = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_name);
 
-			name.setText(sensorType.getName() + ":");
+			name.setText(sensorType.getName());
 
 			// set up this action's arguments {{{
 
@@ -259,14 +279,14 @@ public class AppDetailFragment extends Fragment {
 			this.perturbLambdaView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_lambda);
 
 			timingView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing);
-			daysOfWeekView = new CheckBox[7];
-			daysOfWeekView[0] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_sunday);
-			daysOfWeekView[1] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_monday);
-			daysOfWeekView[2] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_tuesday);
-			daysOfWeekView[3] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_wednesday);
-			daysOfWeekView[4] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_thursday);
-			daysOfWeekView[5] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_friday);
-			daysOfWeekView[6] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_saturday);
+			dayOfWeekViews = new CheckBox[7];
+			dayOfWeekViews[0] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_sunday);
+			dayOfWeekViews[1] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_monday);
+			dayOfWeekViews[2] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_tuesday);
+			dayOfWeekViews[3] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_wednesday);
+			dayOfWeekViews[4] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_thursday);
+			dayOfWeekViews[5] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_friday);
+			dayOfWeekViews[6] = (CheckBox) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_saturday);
 			fromHourView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_fromhour);
 			toHourView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_tohour);
 			fromMinuteView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing_fromminutes);
@@ -352,15 +372,27 @@ public class AppDetailFragment extends Fragment {
 
 			FirewallConfigMessage.DateTime.Builder dtBuilder = FirewallConfigMessage.DateTime.newBuilder();
 			for (int dayIdx = 0; dayIdx < 7; dayIdx++) {
-				if (daysOfWeekView[dayIdx].isChecked()) {
+				if (dayOfWeekViews[dayIdx].isChecked()) {
 					dtBuilder.addDayOfWeek(dayIdx);
 				}
 			}
 
-			dtBuilder.setFromHr(Integer.parseInt(fromHourView.getText().toString()));
-			dtBuilder.setFromMin(Integer.parseInt(fromMinuteView.getText().toString()));
-			dtBuilder.setToHr(Integer.parseInt(toHourView.getText().toString()));
-			dtBuilder.setToMin(Integer.parseInt(toMinuteView.getText().toString()));
+			String fromHr = fromHourView.getText().toString();
+			String fromMin = fromMinuteView.getText().toString();
+			String toHr = toHourView.getText().toString();
+			String toMin = toMinuteView.getText().toString();
+
+			// values left blank are presumed zero... unless the "end time" is blank
+			// then we presume it to mean "until the end of the day"
+			if (toHr.equals("") && toMin.equals("")) {
+				toHr = "23";
+				toMin = "59";
+			}
+
+			dtBuilder.setFromHr(str2int(fromHr));
+			dtBuilder.setFromMin(str2int(fromMin));
+			dtBuilder.setToHr(str2int(toHr));
+			dtBuilder.setToMin(str2int(toMin));
 
 			FirewallConfigMessage.DateTime dt = dtBuilder.build();
 
@@ -381,6 +413,72 @@ public class AppDetailFragment extends Fragment {
 			// }}}
 
 		} // }}}
+
+		protected Bundle saveGuiState () { // {{{
+			Bundle state = new Bundle();
+
+			// make note of sensor type
+			state.putInt("android_sensor_id", sensorType.getAndroidId());
+
+			// store selected action
+			state.putInt("action", ruleActionView.getSelectedItemPosition());
+
+			// store constants
+			String[] constants = new String[constantValueViews.length];
+			for (int constantIdx = 0; constantIdx < constantValueViews.length; constantIdx++) {
+				constants[constantIdx] = constantValueViews[constantIdx].getText().toString();
+			}
+			state.putStringArray("constants", constants);
+
+			// store perturb data
+			state.putInt("perturb_distribution", perturbDistributionView.getSelectedItemPosition());
+			state.putString("perturb_mean", perturbMeanView.getText().toString());
+			state.putString("perturb_variance", perturbVarianceView.getText().toString());
+			state.putString("perturb_min", perturbMinView.getText().toString());
+			state.putString("perturb_max", perturbMaxView.getText().toString());
+			state.putString("perturb_lambda", perturbLambdaView.getText().toString());
+
+			// store timing data
+			boolean[] daysOfWeek = new boolean[7];
+			for (int day = 0 /* 0 = sunday */; day < 7; day++) {
+				daysOfWeek[day] = dayOfWeekViews[day].isChecked();
+			}
+			state.putBooleanArray("timing_daysofweek", daysOfWeek);
+			state.putString("timing_fromhour", fromHourView.getText().toString());
+			state.putString("timing_fromminute", fromMinuteView.getText().toString());
+			state.putString("timing_tohour", toHourView.getText().toString());
+			state.putString("timing_tominute", toMinuteView.getText().toString());
+
+			return state;
+		} // }}}
+		protected void restoreGuiState (Bundle state) { // {{{
+			// restore selected action
+			ruleActionView.setSelection(state.getInt("action"));
+
+			// restore constants
+			String[] constants = state.getStringArray("constants");;
+			for (int constantIdx = 0; constantIdx < constantValueViews.length; constantIdx++) {
+				constantValueViews[constantIdx].setText(constants[constantIdx]);
+			}
+
+			// restore perturb data
+			perturbDistributionView.setSelection(state.getInt("perturb_distribution"));
+			perturbMeanView.setText(state.getString("perturb_mean"));
+			perturbVarianceView.setText(state.getString("perturb_variance"));
+			perturbMinView.setText(state.getString("perturb_min"));
+			perturbMaxView.setText(state.getString("perturb_max"));
+			perturbLambdaView.setText(state.getString("perturb_lambda"));
+
+			// restore timing data
+			boolean[] daysOfWeek = state.getBooleanArray("timing_daysofweek");
+			for (int day = 0 /* 0 = sunday */; day < 7; day++) {
+				dayOfWeekViews[day].setChecked(daysOfWeek[day]);
+			}
+			fromHourView.setText(state.getString("timing_fromhour"));
+			fromMinuteView.setText(state.getString("timing_fromminute"));
+			toHourView.setText(state.getString("timing_tohour"));
+			toMinuteView.setText(state.getString("timing_tominute"));
+		} // }}}
 	}
 
 	// }}}
@@ -389,6 +487,22 @@ public class AppDetailFragment extends Fragment {
 
 	ViewGroup sensorViews; // the view containing the sensors
 	ArrayList<SensorTypeRule> rules = new ArrayList<SensorTypeRule>();
+
+	// this method generates a protobuf in base64 string form representing the app
+	public String genProtobuf64 () { // {{{
+		FirewallConfigMessage.FirewallConfig.Builder fwBuilder = FirewallConfigMessage.FirewallConfig.newBuilder();
+		
+		for (int sTypeIdx = 0; sTypeIdx < rules.size(); sTypeIdx++) {
+			FirewallConfigMessage.Rule curRule = rules.get(sTypeIdx).genRule();
+			fwBuilder.addRule(curRule);
+		}
+
+		FirewallConfigMessage.FirewallConfig fwConfig = fwBuilder.build();
+
+		String serializedFirewallConfigProto = Base64.encodeToString(fwConfig.toByteArray(), Base64.DEFAULT);
+
+		return serializedFirewallConfigProto;
+	} // }}}
 
 	// onCreate {{{
 
@@ -456,18 +570,18 @@ public class AppDetailFragment extends Fragment {
 			sensorViews.addView(ruleView);
 		}
 
+		if (sensorTypes.size() == 0) { // there aren't any known sensors being used
+			TextView emptyMsg = new TextView(getActivity());
+			emptyMsg.setText("We haven't observed this app using any sensors.");
+			sensorViews.addView(emptyMsg);
+
+			// hide the apply button
+			((Button) rootView.findViewById(R.id.fragment_app_detail_apply_button)).setVisibility(View.GONE);
+		}
+
 		((Button) rootView.findViewById(R.id.fragment_app_detail_apply_button)).setOnClickListener(new View.OnClickListener () {
 			public void onClick (View v) {
-				FirewallConfigMessage.FirewallConfig.Builder fwBuilder = FirewallConfigMessage.FirewallConfig.newBuilder();
-				
-				for (int sTypeIdx = 0; sTypeIdx < rules.size(); sTypeIdx++) {
-					FirewallConfigMessage.Rule curRule = rules.get(sTypeIdx).genRule();
-					fwBuilder.addRule(curRule);
-				}
-
-				FirewallConfigMessage.FirewallConfig fwConfig = fwBuilder.build();
-
-				String serializedFirewallConfigProto = Base64.encodeToString(fwConfig.toByteArray(), Base64.DEFAULT);
+				String serializedFirewallConfigProto = genProtobuf64();
 
 				FirewallConfigManager fwMgr = (FirewallConfigManager) getActivity().getSystemService(Context.FIREWALLCONFIG_SERVICE);
 				fwMgr.setFirewallConfig(serializedFirewallConfigProto);
@@ -480,4 +594,81 @@ public class AppDetailFragment extends Fragment {
 	}
 
 	// }}}
+	
+	public Bundle storeGuiState () { // {{{
+		Bundle outState = new Bundle();
+
+		ArrayList<Bundle> ruleBundles = new ArrayList<Bundle>();
+		for (int ruleIdx = 0; ruleIdx < rules.size(); ruleIdx++) {
+			ruleBundles.add(rules.get(ruleIdx).saveGuiState());
+		}
+
+		outState.putParcelableArrayList("rules", ruleBundles);
+		outState.putInt("FOOBOOSH", 666);
+
+		ArrayList<String> keys = new ArrayList<String>(outState.keySet());
+		Log.d("storeGuiState", "going to print sluttykeys");
+		for (int i = 0; i < keys.size(); i++) {
+			Log.d("storeGuiState", "sluttykeys: " + keys.get(i));
+		}
+		Log.d("storeGuiState", "have finished printing sluttykeys");
+
+		return outState;
+	} // }}}
+	public void restoreGuiState (Bundle state) { // {{{
+		ArrayList<String> keys = new ArrayList<String>(state.keySet());
+		Log.d("restoreGuiState", "going to print sexykeys");
+		for (int i = 0; i < keys.size(); i++) {
+			Log.d("restoreGuiState", "sexykey: " + keys.get(i));
+		}
+		Log.d("restoreGuiState", "have finished printing sexykeys");
+
+		ArrayList<Bundle> ruleBundles = state.getParcelableArrayList("rules");
+
+		for (int ruleBundleIdx = 0; ruleBundleIdx < ruleBundles.size(); ruleBundleIdx++) {
+			// have to find the right rule to apply this bundle to...
+			for (int ruleIdx = 0; ruleIdx < rules.size(); ruleIdx++) {
+				if (rules.get(ruleIdx).getSensorType().getAndroidId() == ruleBundles.get(ruleBundleIdx).getInt("android_sensor_id")) {
+					rules.get(ruleIdx).restoreGuiState(ruleBundles.get(ruleBundleIdx));
+				}
+			}
+		}
+	} // }}}
+
+	public void onPause() { // {{{
+		super.onPause();
+		
+		Bundle guiStateBundle = storeGuiState();
+
+		Parcel guiStateParcel = Parcel.obtain();
+		guiStateBundle.writeToParcel(guiStateParcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+		byte[] buf = guiStateParcel.marshall();
+		String  guiStateString = Base64.encodeToString(buf, Base64.DEFAULT);
+
+		SharedPreferences prefs = getActivity().getSharedPreferences("app_gui_states", Context.MODE_PRIVATE);
+
+		SharedPreferences.Editor prefsEditor = prefs.edit();
+		prefsEditor.putString(app.getPackageName(), guiStateString);
+		prefsEditor.apply();
+	} // }}}
+	public void onResume() { // {{{
+		super.onResume();
+		
+		SharedPreferences prefs = getActivity().getSharedPreferences("app_gui_states", Context.MODE_PRIVATE);
+		String guiStringState = prefs.getString(app.getPackageName(), "");
+		if (guiStringState.equals("")) {
+			return;
+		}
+
+		Log.d("FUCK", "GO HERE FUCKERS");
+
+		byte[] buf = Base64.decode(guiStringState, Base64.DEFAULT);
+		Parcel guiStateParcel = Parcel.obtain();
+		guiStateParcel.unmarshall(buf, 0, buf.length);
+
+		Bundle guiStateBundle = new Bundle();
+		guiStateBundle.readFromParcel(guiStateParcel);
+
+		restoreGuiState(guiStateBundle);
+	} // }}}
 }

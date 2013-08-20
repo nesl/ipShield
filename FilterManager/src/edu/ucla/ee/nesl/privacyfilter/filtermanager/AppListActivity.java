@@ -36,6 +36,8 @@ public class AppListActivity extends FragmentActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
 
+		getSharedPreferences("app_gui_states", 0).edit().clear().apply(); // TODO delete me when done testing
+
 		if (findViewById(R.id.app_detail_container) != null) {
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and

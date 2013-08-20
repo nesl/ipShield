@@ -112,4 +112,8 @@ public class AppFilterData {
 	public ArrayList<SensorType> getSensorsUsed () {
 		return sensorsUsed;
 	}
+
+	public String getPackageName() {
+		return pmAppInfo.packageName;
+	}
 }

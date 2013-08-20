@@ -71,28 +71,25 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/fragment_app_detail_header"
-		android:layout_above="@+id/fragment_app_detail_apply_button_frame"
 		android:scrollbars="vertical"
 	>
 		<LinearLayout
-			android:id="@+id/fragment_app_detail_sensors"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-		/>
+		>
+			<LinearLayout
+				android:id="@+id/fragment_app_detail_sensors"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+			/>
+			<Button
+				android:id="@+id/fragment_app_detail_apply_button"
+				android:layout_width="match_parent"
+				android:layout_height="64dp"
+				android:text="Apply"
+			/>
+		</LinearLayout>
 	</ScrollView>
-
-	<LinearLayout
-		android:id="@id/fragment_app_detail_apply_button_frame"
-		android:layout_width="match_parent"
-		android:layout_height="64dp"
-		android:layout_alignParentBottom="true"
-	>
-		<Button
-			android:id="@+id/fragment_app_detail_apply_button"
-			android:layout_width="match_parent"
-			android:layout_height="64dp"
-			android:text="Apply"
-		/>
-	</LinearLayout>
 </RelativeLayout>
