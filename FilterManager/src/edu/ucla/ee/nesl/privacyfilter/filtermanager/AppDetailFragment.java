@@ -4,8 +4,10 @@ package edu.ucla.ee.nesl.privacyfilter.filtermanager;
 
 import java.util.ArrayList;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+//import android.os.Parcel;
+//import android.os.Parcelable;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
@@ -26,6 +28,12 @@ import android.widget.Button;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
+import android.util.Base64;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppFilterData;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppId;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.Inference;
@@ -34,8 +42,6 @@ import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.SensorType;
 import com.google.protobuf.*;
 import android.os.FirewallConfigManager;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.io.protobuf.FirewallConfigMessage;
-import android.util.Base64;
-
 // }}}
 
 /**
@@ -414,51 +420,51 @@ public class AppDetailFragment extends Fragment {
 
 		} // }}}
 
-		protected Bundle saveGuiState () { // {{{
-			Bundle state = new Bundle();
+		protected JSONObject saveGuiState () throws JSONException { // {{{
+			JSONObject state = new JSONObject();
 
 			// make note of sensor type
-			state.putInt("android_sensor_id", sensorType.getAndroidId());
+			state.put("android_sensor_id", sensorType.getAndroidId());
 
 			// store selected action
-			state.putInt("action", ruleActionView.getSelectedItemPosition());
+			state.put("action", ruleActionView.getSelectedItemPosition());
 
 			// store constants
-			String[] constants = new String[constantValueViews.length];
-			for (int constantIdx = 0; constantIdx < constantValueViews.length; constantIdx++) {
-				constants[constantIdx] = constantValueViews[constantIdx].getText().toString();
+			JSONArray constants = new JSONArray();
+			for (TextView cView : constantValueViews) {
+				constants.put(cView.getText().toString());
 			}
-			state.putStringArray("constants", constants);
+			state.put("constants", constants);
 
 			// store perturb data
-			state.putInt("perturb_distribution", perturbDistributionView.getSelectedItemPosition());
-			state.putString("perturb_mean", perturbMeanView.getText().toString());
-			state.putString("perturb_variance", perturbVarianceView.getText().toString());
-			state.putString("perturb_min", perturbMinView.getText().toString());
-			state.putString("perturb_max", perturbMaxView.getText().toString());
-			state.putString("perturb_lambda", perturbLambdaView.getText().toString());
+			state.put("perturb_distribution", perturbDistributionView.getSelectedItemPosition());
+			state.put("perturb_mean", perturbMeanView.getText().toString());
+			state.put("perturb_variance", perturbVarianceView.getText().toString());
+			state.put("perturb_min", perturbMinView.getText().toString());
+			state.put("perturb_max", perturbMaxView.getText().toString());
+			state.put("perturb_lambda", perturbLambdaView.getText().toString());
 
 			// store timing data
-			boolean[] daysOfWeek = new boolean[7];
+			JSONArray daysOfWeek = new JSONArray();
 			for (int day = 0 /* 0 = sunday */; day < 7; day++) {
-				daysOfWeek[day] = dayOfWeekViews[day].isChecked();
+				daysOfWeek.put(day, dayOfWeekViews[day].isChecked());
 			}
-			state.putBooleanArray("timing_daysofweek", daysOfWeek);
-			state.putString("timing_fromhour", fromHourView.getText().toString());
-			state.putString("timing_fromminute", fromMinuteView.getText().toString());
-			state.putString("timing_tohour", toHourView.getText().toString());
-			state.putString("timing_tominute", toMinuteView.getText().toString());
+			state.put("timing_daysofweek", daysOfWeek);
+			state.put("timing_fromhour", fromHourView.getText().toString());
+			state.put("timing_fromminute", fromMinuteView.getText().toString());
+			state.put("timing_tohour", toHourView.getText().toString());
+			state.put("timing_tominute", toMinuteView.getText().toString());
 
 			return state;
 		} // }}}
-		protected void restoreGuiState (Bundle state) { // {{{
+		protected void restoreGuiState (JSONObject state) throws JSONException { // {{{
 			// restore selected action
 			ruleActionView.setSelection(state.getInt("action"));
 
 			// restore constants
-			String[] constants = state.getStringArray("constants");;
-			for (int constantIdx = 0; constantIdx < constantValueViews.length; constantIdx++) {
-				constantValueViews[constantIdx].setText(constants[constantIdx]);
+			JSONArray constants = state.getJSONArray("constants");;
+			for (int cIdx = 0; cIdx < constantValueViews.length; cIdx++) {
+				constantValueViews[cIdx].setText(constants.getString(cIdx));
 			}
 
 			// restore perturb data
@@ -470,9 +476,9 @@ public class AppDetailFragment extends Fragment {
 			perturbLambdaView.setText(state.getString("perturb_lambda"));
 
 			// restore timing data
-			boolean[] daysOfWeek = state.getBooleanArray("timing_daysofweek");
+			JSONArray daysOfWeek = state.getJSONArray("timing_daysofweek");
 			for (int day = 0 /* 0 = sunday */; day < 7; day++) {
-				dayOfWeekViews[day].setChecked(daysOfWeek[day]);
+				dayOfWeekViews[day].setChecked(daysOfWeek.getBoolean(day));
 			}
 			fromHourView.setText(state.getString("timing_fromhour"));
 			fromMinuteView.setText(state.getString("timing_fromminute"));
@@ -595,41 +601,38 @@ public class AppDetailFragment extends Fragment {
 
 	// }}}
 	
-	public Bundle storeGuiState () { // {{{
-		Bundle outState = new Bundle();
+	public JSONObject storeGuiState () throws JSONException { // {{{
+		JSONObject state = new JSONObject();
 
-		ArrayList<Bundle> ruleBundles = new ArrayList<Bundle>();
-		for (int ruleIdx = 0; ruleIdx < rules.size(); ruleIdx++) {
-			ruleBundles.add(rules.get(ruleIdx).saveGuiState());
+		// record MY version name (version name of this instance of FilterManager)
+		// for compatability reasons in the gui state string
+		String versionName = "(undefined package version)";
+		try {
+			versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+		} catch (PackageManager.NameNotFoundException pmE) {
+			Log.wtf(getClass().toString(), "My own package was not found in the package manager");
+			return null;
+		}
+		
+		state.put("filtermanager_version", versionName);
+
+		JSONArray serializedRules = new JSONArray();
+		for (SensorTypeRule rule : rules) {
+			serializedRules.put(rule.saveGuiState());
 		}
 
-		outState.putParcelableArrayList("rules", ruleBundles);
-		outState.putInt("FOOBOOSH", 666);
+		state.put("rules", serializedRules);
 
-		ArrayList<String> keys = new ArrayList<String>(outState.keySet());
-		Log.d("storeGuiState", "going to print sluttykeys");
-		for (int i = 0; i < keys.size(); i++) {
-			Log.d("storeGuiState", "sluttykeys: " + keys.get(i));
-		}
-		Log.d("storeGuiState", "have finished printing sluttykeys");
-
-		return outState;
+		return state;
 	} // }}}
-	public void restoreGuiState (Bundle state) { // {{{
-		ArrayList<String> keys = new ArrayList<String>(state.keySet());
-		Log.d("restoreGuiState", "going to print sexykeys");
-		for (int i = 0; i < keys.size(); i++) {
-			Log.d("restoreGuiState", "sexykey: " + keys.get(i));
-		}
-		Log.d("restoreGuiState", "have finished printing sexykeys");
+	public void restoreGuiState (JSONObject state) throws JSONException { // {{{
+		JSONArray serializedRules = state.getJSONArray("rules");
 
-		ArrayList<Bundle> ruleBundles = state.getParcelableArrayList("rules");
-
-		for (int ruleBundleIdx = 0; ruleBundleIdx < ruleBundles.size(); ruleBundleIdx++) {
-			// have to find the right rule to apply this bundle to...
+		for (int sRuleIdx = 0; sRuleIdx < serializedRules.length(); sRuleIdx++) {
+			// make sure we have the right sensor before restoring the rule gui state...
 			for (int ruleIdx = 0; ruleIdx < rules.size(); ruleIdx++) {
-				if (rules.get(ruleIdx).getSensorType().getAndroidId() == ruleBundles.get(ruleBundleIdx).getInt("android_sensor_id")) {
-					rules.get(ruleIdx).restoreGuiState(ruleBundles.get(ruleBundleIdx));
+				if (rules.get(ruleIdx).getSensorType().getAndroidId() == serializedRules.getJSONObject(sRuleIdx).getInt("android_sensor_id")) {
+					rules.get(ruleIdx).restoreGuiState(serializedRules.getJSONObject(sRuleIdx));
 				}
 			}
 		}
@@ -638,12 +641,14 @@ public class AppDetailFragment extends Fragment {
 	public void onPause() { // {{{
 		super.onPause();
 		
-		Bundle guiStateBundle = storeGuiState();
+		String guiStateString = "";
 
-		Parcel guiStateParcel = Parcel.obtain();
-		guiStateBundle.writeToParcel(guiStateParcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-		byte[] buf = guiStateParcel.marshall();
-		String  guiStateString = Base64.encodeToString(buf, Base64.DEFAULT);
+		try {
+			guiStateString = storeGuiState().toString();
+		} catch (JSONException jsE) {
+			Log.e(getClass().toString(), "Error saving GUI state");
+			return;
+		}
 
 		SharedPreferences prefs = getActivity().getSharedPreferences("app_gui_states", Context.MODE_PRIVATE);
 
@@ -655,20 +660,17 @@ public class AppDetailFragment extends Fragment {
 		super.onResume();
 		
 		SharedPreferences prefs = getActivity().getSharedPreferences("app_gui_states", Context.MODE_PRIVATE);
-		String guiStringState = prefs.getString(app.getPackageName(), "");
-		if (guiStringState.equals("")) {
+		String guiStateString = prefs.getString(app.getPackageName(), "");
+		if (guiStateString.equals("")) {
 			return;
 		}
 
-		Log.d("FUCK", "GO HERE FUCKERS");
-
-		byte[] buf = Base64.decode(guiStringState, Base64.DEFAULT);
-		Parcel guiStateParcel = Parcel.obtain();
-		guiStateParcel.unmarshall(buf, 0, buf.length);
-
-		Bundle guiStateBundle = new Bundle();
-		guiStateBundle.readFromParcel(guiStateParcel);
-
-		restoreGuiState(guiStateBundle);
+		try {
+			JSONObject guiState = new JSONObject(guiStateString);
+			restoreGuiState(guiState);
+		} catch (JSONException jsE) {
+			Log.e(getClass().toString(), "Error reading saved GUI state");
+			return;
+		}
 	} // }}}
 }
