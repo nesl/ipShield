@@ -320,7 +320,7 @@
 			<Spinner
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_distribution"
 				android:layout_width="0dp"
-				android:layout_weight=".34"
+				android:layout_weight=".4"
 				android:layout_height="wrap_content"
 				android:drawSelectorOnTop="true"
 				android:entries="@array/fragment_app_detail_sensor_action_arguments_perturb_distributions"
@@ -329,7 +329,7 @@
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_mean"
 				android:layout_width="0dp"
-				android:layout_weight=".33"
+				android:layout_weight=".30"
 				android:layout_height="match_parent"
 				android:visibility="visible"
 				android:editable="true"
@@ -342,7 +342,7 @@
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_variance"
 				android:layout_width="0dp"
-				android:layout_weight=".33"
+				android:layout_weight=".30"
 				android:layout_height="match_parent"
 				android:visibility="visible"
 				android:editable="true"
@@ -355,7 +355,7 @@
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_min"
 				android:layout_width="0dp"
-				android:layout_weight=".33"
+				android:layout_weight=".30"
 				android:layout_height="match_parent"
 				android:visibility="gone"
 				android:editable="true"
@@ -368,7 +368,7 @@
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_max"
 				android:layout_width="0dp"
-				android:layout_weight=".33"
+				android:layout_weight=".30"
 				android:layout_height="match_parent"
 				android:visibility="gone"
 				android:editable="true"
@@ -381,7 +381,7 @@
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_perturb_lambda"
 				android:layout_width="0dp"
-				android:layout_weight=".66"
+				android:layout_weight=".60"
 				android:layout_height="match_parent"
 				android:visibility="gone"
 				android:editable="true"
