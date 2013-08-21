@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Button;
+import android.text.method.DigitsKeyListener;
 
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -273,11 +274,12 @@ public class AppDetailFragment extends Fragment {
 			this.constantValueViews[3] = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_constant3_value);
 			this.constantValueViews[4] = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_constant4_value);
 
-			// set up constant names and units as well as default values
+			// set up constant names and units as well as default values... also handle setting types
 			for (int constIdx = 0; constIdx < MAX_CONSTANTS && constIdx < sensorType.getAndroidValueNames().length; constIdx++) {
-				constantNameViews[constIdx].setText(sensorType.getAndroidValueNames()[constIdx] + ":");
-				constantUnitViews[constIdx].setText("(" + sensorType.getAndroidValueUnits()[constIdx] + ")");
-				constantValueViews[constIdx].setText(Float.toString(sensorType.getDefaultValues()[constIdx]));
+				this.constantNameViews[constIdx].setText(sensorType.getAndroidValueNames()[constIdx] + ":");
+				this.constantUnitViews[constIdx].setText("(" + sensorType.getAndroidValueUnits()[constIdx] + ")");
+				this.constantValueViews[constIdx].setText(Float.toString(sensorType.getDefaultValues()[constIdx]));
+				this.constantValueViews[constIdx].setKeyListener(DigitsKeyListener.getInstance(true, true));
 			}
 
 			//this.delayView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay);
@@ -290,10 +292,15 @@ public class AppDetailFragment extends Fragment {
 			this.perturbView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb);
 			this.perturbDistributionView = (Spinner) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_distribution);
 			this.perturbMeanView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_mean);
+			this.perturbMeanView.setKeyListener(DigitsKeyListener.getInstance(true, true));
 			this.perturbVarianceView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_variance);
+			this.perturbVarianceView.setKeyListener(DigitsKeyListener.getInstance(true, true));
 			this.perturbMinView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_min);
+			this.perturbMinView.setKeyListener(DigitsKeyListener.getInstance(true, true));
 			this.perturbMaxView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_max);
+			this.perturbMaxView.setKeyListener(DigitsKeyListener.getInstance(true, true));
 			this.perturbLambdaView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_lambda);
+			this.perturbLambdaView.setKeyListener(DigitsKeyListener.getInstance(true, true));
 
 			timingView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_timing);
 			dayOfWeekViews = new CheckBox[7];

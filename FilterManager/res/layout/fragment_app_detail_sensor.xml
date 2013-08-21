@@ -76,6 +76,7 @@
 				android:editable="true"
 				android:inputType="number"
 				android:digits="-0123456789."
+				android:numeric="signed|decimal"
 				android:maxLength="@string/constant_max_length"
 			/>
 
