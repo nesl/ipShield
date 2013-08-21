@@ -100,11 +100,17 @@ public class AppDetailFragment extends Fragment {
 
 		// Protobuf enums {{{
 
+		//private final FirewallConfigMessage.Action.ActionType[] PROTOBUF_ACTIONS = {
+		//	FirewallConfigMessage.Action.ActionType.ACTION_PASSTHROUGH,
+		//	FirewallConfigMessage.Action.ActionType.ACTION_SUPPRESS,
+		//	FirewallConfigMessage.Action.ActionType.ACTION_CONSTANT,
+		//	FirewallConfigMessage.Action.ActionType.ACTION_DELAY,
+		//	FirewallConfigMessage.Action.ActionType.ACTION_PERTURB,
+		//};
 		private final FirewallConfigMessage.Action.ActionType[] PROTOBUF_ACTIONS = {
 			FirewallConfigMessage.Action.ActionType.ACTION_PASSTHROUGH,
 			FirewallConfigMessage.Action.ActionType.ACTION_SUPPRESS,
 			FirewallConfigMessage.Action.ActionType.ACTION_CONSTANT,
-			FirewallConfigMessage.Action.ActionType.ACTION_DELAY,
 			FirewallConfigMessage.Action.ActionType.ACTION_PERTURB,
 		};
 
@@ -128,12 +134,12 @@ public class AppDetailFragment extends Fragment {
 		private TextView[] constantUnitViews;
 		private TextView[] constantValueViews;
 
-		private ViewGroup delayView;
-		private TextView delayDaysView;
-		private TextView delayHoursView;
-		private TextView delayMinutesView;
-		private TextView delaySecondsView;
-		private TextView delayMillisecondsView;
+		//private ViewGroup delayView;
+		//private TextView delayDaysView;
+		//private TextView delayHoursView;
+		//private TextView delayMinutesView;
+		//private TextView delaySecondsView;
+		//private TextView delayMillisecondsView;
 
 		private ViewGroup perturbView;
 		private Spinner perturbDistributionView;
@@ -196,7 +202,7 @@ public class AppDetailFragment extends Fragment {
 					for (int constIdx = 0; constIdx < MAX_CONSTANTS; constIdx++) {
 						constantViews[constIdx].setVisibility(View.GONE);
 					}
-					delayView.setVisibility(View.GONE);
+					//delayView.setVisibility(View.GONE);
 					perturbView.setVisibility(View.GONE);
 					timingView.setVisibility(View.GONE);
 
@@ -212,11 +218,15 @@ public class AppDetailFragment extends Fragment {
 							}
 							timingView.setVisibility(View.VISIBLE);
 							break;
-						case 3: // delay
-							delayView.setVisibility(View.VISIBLE);
-							timingView.setVisibility(View.VISIBLE);
-							break;
-						case 4: // perturb
+						//case 3: // delay
+						//	delayView.setVisibility(View.VISIBLE);
+						//	timingView.setVisibility(View.VISIBLE);
+						//	break;
+						//case 4: // perturb
+						//	perturbView.setVisibility(View.VISIBLE);
+						//	timingView.setVisibility(View.VISIBLE);
+						//	break;
+						case 3: // perturb
 							perturbView.setVisibility(View.VISIBLE);
 							timingView.setVisibility(View.VISIBLE);
 							break;
@@ -269,12 +279,12 @@ public class AppDetailFragment extends Fragment {
 				constantUnitViews[constIdx].setText("(" + sensorType.getAndroidValueUnits()[constIdx] + ")");
 			}
 
-			this.delayView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay);
-			this.delayDaysView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_days);
-			this.delayHoursView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_hours);
-			this.delayMinutesView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_minutes);
-			this.delaySecondsView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_seconds);
-			this.delayMillisecondsView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_milliseconds);
+			//this.delayView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay);
+			//this.delayDaysView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_days);
+			//this.delayHoursView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_hours);
+			//this.delayMinutesView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_minutes);
+			//this.delaySecondsView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_seconds);
+			//this.delayMillisecondsView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay_milliseconds);
 
 			this.perturbView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb);
 			this.perturbDistributionView = (Spinner) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_perturb_distribution);
@@ -335,15 +345,15 @@ public class AppDetailFragment extends Fragment {
 			// }}}
 			// set delay {{{
 
-			float delay = 0f;
+			//float delay = 0f;
 
-			delay += str2float(delayMillisecondsView.getText()) / 1000;
-			delay += str2float(delaySecondsView.getText());
-			delay += str2float(delayMinutesView.getText()) * 60;
-			delay += str2float(delayHoursView.getText()) * 3600;
-			delay += str2float(delayDaysView.getText()) * 86400;
+			//delay += str2float(delayMillisecondsView.getText()) / 1000;
+			//delay += str2float(delaySecondsView.getText());
+			//delay += str2float(delayMinutesView.getText()) * 60;
+			//delay += str2float(delayHoursView.getText()) * 3600;
+			//delay += str2float(delayDaysView.getText()) * 86400;
 
-			paramBuilder.setDelay(delay);
+			//paramBuilder.setDelay(delay);
 			
 			// }}}
 			// set perturb data {{{
@@ -410,7 +420,7 @@ public class AppDetailFragment extends Fragment {
 			ruleBuilder.setSensorType(sensorType.getAndroidId());
 			ruleBuilder.setPkgName(app.getApplicationInfo().packageName);
 			ruleBuilder.setPkgUid(app.getApplicationInfo().uid);
-			// TODO ignoring dateTime for now
+
 			ruleBuilder.setAction(action);
 			ruleBuilder.setDateTime(dt);
 

@@ -10,6 +10,8 @@ package edu.ucla.ee.nesl.privacyfilter.filtermanager;
 public final class R {
     public static final class array {
         public static final int fragment_app_detail_sensor_action_arguments_perturb_distributions=0x7f050001;
+        /**  aka perturb 
+         */
         public static final int fragment_app_detail_sensor_actions=0x7f050000;
     }
     public static final class attr {
@@ -50,31 +52,25 @@ public final class R {
         public static final int fragment_app_detail_sensor_action_arguments_constant4_name=0x7f070023;
         public static final int fragment_app_detail_sensor_action_arguments_constant4_unit=0x7f070025;
         public static final int fragment_app_detail_sensor_action_arguments_constant4_value=0x7f070024;
-        public static final int fragment_app_detail_sensor_action_arguments_delay=0x7f070026;
-        public static final int fragment_app_detail_sensor_action_arguments_delay_days=0x7f070027;
-        public static final int fragment_app_detail_sensor_action_arguments_delay_hours=0x7f070028;
-        public static final int fragment_app_detail_sensor_action_arguments_delay_milliseconds=0x7f07002b;
-        public static final int fragment_app_detail_sensor_action_arguments_delay_minutes=0x7f070029;
-        public static final int fragment_app_detail_sensor_action_arguments_delay_seconds=0x7f07002a;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb=0x7f07002c;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_distribution=0x7f07002d;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_lambda=0x7f070032;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_max=0x7f070031;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_mean=0x7f07002e;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_min=0x7f070030;
-        public static final int fragment_app_detail_sensor_action_arguments_perturb_variance=0x7f07002f;
-        public static final int fragment_app_detail_sensor_action_arguments_timing=0x7f070033;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_friday=0x7f070039;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_fromhour=0x7f07003b;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_fromminutes=0x7f07003c;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_monday=0x7f070035;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_saturday=0x7f07003a;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_sunday=0x7f070034;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_thursday=0x7f070038;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_tohour=0x7f07003d;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_tominutes=0x7f07003e;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_tuesday=0x7f070036;
-        public static final int fragment_app_detail_sensor_action_arguments_timing_wednesday=0x7f070037;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb=0x7f070026;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_distribution=0x7f070027;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_lambda=0x7f07002c;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_max=0x7f07002b;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_mean=0x7f070028;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_min=0x7f07002a;
+        public static final int fragment_app_detail_sensor_action_arguments_perturb_variance=0x7f070029;
+        public static final int fragment_app_detail_sensor_action_arguments_timing=0x7f07002d;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_friday=0x7f070033;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_fromhour=0x7f070035;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_fromminutes=0x7f070036;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_monday=0x7f07002f;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_saturday=0x7f070034;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_sunday=0x7f07002e;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_thursday=0x7f070032;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_tohour=0x7f070037;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_tominutes=0x7f070038;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_tuesday=0x7f070030;
+        public static final int fragment_app_detail_sensor_action_arguments_timing_wednesday=0x7f070031;
         public static final int fragment_app_detail_sensor_name=0x7f07000f;
         public static final int fragment_app_detail_sensors=0x7f07000c;
         public static final int fragment_app_detail_sensors_scroll=0x7f07000b;

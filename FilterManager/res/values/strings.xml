@@ -6,11 +6,11 @@
 		<string name="std_line_height">40sp</string>
 
 		<string-array name="fragment_app_detail_sensor_actions">
-			<item>No action</item>
+			<item>Normal</item>
 			<item>Suppress</item>
-			<item>Constant</item>
-			<item>Delay</item>
-			<item>Perturb</item>
+			<item>Replace</item> <!-- aka constant value -->
+			<!--<item>Delay</item>-->
+			<item>Fuzz</item> <!-- aka perturb -->
 		</string-array>
 
 		<string name="constant_max_length">11</string>

@@ -29,7 +29,7 @@
 			android:layout_weight=".65"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
-			android:textSize="22sp"
+			android:textSize="18sp"
 			android:textStyle="bold"
 			android:textColor="#ffcc0000"
 		/>
@@ -64,13 +64,14 @@
 		>
 			<TextView
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant0_name"
-				android:layout_width="wrap_content"
+				android:layout_width="80sp"
 				android:layout_height="wrap_content"
+				android:gravity="right"
 			/>
 
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant0_value"
-				android:layout_width="wrap_content"
+				android:layout_width="110sp"
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:inputType="number"
@@ -95,13 +96,14 @@
 		>
 			<TextView
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant1_name"
-				android:layout_width="wrap_content"
+				android:layout_width="80sp"
 				android:layout_height="wrap_content"
+				android:gravity="right"
 			/>
 
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant1_value"
-				android:layout_width="wrap_content"
+				android:layout_width="110sp"
 				android:layout_height="match_parent"
 				android:inputType="number"
 				android:editable="true"
@@ -126,17 +128,18 @@
 		>
 			<TextView
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant2_name"
-				android:layout_width="wrap_content"
+				android:layout_width="80sp"
 				android:layout_height="wrap_content"
+				android:gravity="right"
 			/>
 
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant2_value"
-				android:layout_width="wrap_content"
+				android:layout_width="110sp"
 				android:layout_height="match_parent"
 				android:inputType="number"
 				android:editable="true"
-				android:digits="2123456789."
+				android:digits="-0123456789."
 				android:maxLength="@string/constant_max_length"
 			/>
 
@@ -157,13 +160,14 @@
 		>
 			<TextView
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant3_name"
-				android:layout_width="wrap_content"
+				android:layout_width="80sp"
 				android:layout_height="wrap_content"
+				android:gravity="right"
 			/>
 
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant3_value"
-				android:layout_width="wrap_content"
+				android:layout_width="110sp"
 				android:layout_height="match_parent"
 				android:inputType="number"
 				android:editable="true"
@@ -188,13 +192,14 @@
 		>
 			<TextView
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant4_name"
-				android:layout_width="wrap_content"
+				android:layout_width="80sp"
 				android:layout_height="wrap_content"
+				android:gravity="right"
 			/>
 
 			<EditText
 				android:id="@+id/fragment_app_detail_sensor_action_arguments_constant4_value"
-				android:layout_width="wrap_content"
+				android:layout_width="110sp"
 				android:layout_height="match_parent"
 				android:editable="true"
 				android:inputType="number"
@@ -213,6 +218,9 @@
 		<!-- }}} -->
 		<!-- Delay {{{ -->
 
+		<!-- delay is no longer a supported action -->
+
+		<!--
 		<LinearLayout
 			android:id="@+id/fragment_app_detail_sensor_action_arguments_delay"
 			android:layout_width="match_parent"
@@ -230,7 +238,6 @@
 				android:maxLength="2"
 			/>
 
-			<!-- this view is to create a gap -->
 			<View
 				android:layout_width="20sp"
 				android:layout_height="wrap_content"
@@ -298,6 +305,7 @@
 				android:maxLength="3"
 			/>
 		</LinearLayout>
+		-->
 
 		<!-- }}} -->
 		<!-- Perturb {{{ -->

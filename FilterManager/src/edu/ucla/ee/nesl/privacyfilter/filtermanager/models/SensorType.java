@@ -19,27 +19,6 @@ public class SensorType {
 		}
 	}
 
-	private static String[] namesForAndroidIds = {
-		/* 0x00 */ "(Unused)",
-		/* 0x01 */ "Accelerometer",
-		/* 0x02 */ "Magnetic field",
-		/* 0x03 */ "Orientation", // orientation type is deprecated
-		/* 0x04 */ "Gyroscope",
-		/* 0x05 */ "Light",
-		/* 0x06 */ "Pressure",
-		/* 0x07 */ "Temperature (deprecated)", // deprecated for TYPE_AMBIENT_TEMPERATURE
-		/* 0x08 */ "Proximity",
-		/* 0x09 */ "Gravity",
-		/* 0x0a */ "Linear acceleration",
-		/* 0x0b */ "Rotation vector",
-		/* 0x0c */ "Relative humidity",
-		/* 0x0d */ "Ambient temperature",
-		/* 0x0e */ "Magnetic field (uncalibrated)",
-		/* 0x0f */ "Game rotation vector",
-		/* 0x10 */ "Gyroscope (uncalibrated)",
-		/* 0x11 */ "Significant motion"
-	};
-
 	private static AndroidSensorIdData[] androidSensorIdData = {
 		/* 0x00 */ new AndroidSensorIdData("(Unused sensor ID)", new String[]{}, new String[]{}),
 		/* 0x01 */ new AndroidSensorIdData("Accelerometer", new String[]{"X", "Y", "Z"}, new String[]{"m/s\u00b2", "m/s\u00b2", "m/s\u00b2"}),
@@ -83,7 +62,7 @@ public class SensorType {
 		SensorType st = new SensorType();
 		st.androidId = baseAndroidId;
 
-		st.name = namesForAndroidIds[st.androidId];
+		st.name = androidSensorIdData[st.androidId].sensorName;
 
 		return st;
 	}
