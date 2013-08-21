@@ -421,6 +421,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="S"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -429,6 +430,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="M"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -437,6 +439,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="T"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -445,6 +448,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="W"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -453,6 +457,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="Th"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -461,6 +466,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="F"
+					android:checked="true"
 				/>
 
 				<CheckBox
@@ -469,6 +475,7 @@
 					android:layout_height="wrap_content"
 					android:paddingRight="2dp"
 					android:text="Sa"
+					android:checked="true"
 				/>
 			</LinearLayout>
 
@@ -495,6 +502,7 @@
 					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
+					android:text="0"
 				/>
 
 				<TextView
@@ -512,6 +520,7 @@
 					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
+					android:text="00"
 				/>
 
 				<TextView
@@ -531,6 +540,7 @@
 					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
+					android:text="23"
 				/>
 
 				<TextView
@@ -548,6 +558,7 @@
 					android:inputType="number"
 					android:digits="0123456789"
 					android:maxLength="2"
+					android:text="59"
 				/>
 			</LinearLayout>
 

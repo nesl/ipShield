@@ -238,7 +238,7 @@ public class AppDetailFragment extends Fragment {
 			});
 		} // }}}
 
-		protected void setView (View ruleView) {
+		protected void setView (View ruleView) { // {{{
 			this.ruleView = ruleView;
 
 			TextView name = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_name);
@@ -273,10 +273,11 @@ public class AppDetailFragment extends Fragment {
 			this.constantValueViews[3] = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_constant3_value);
 			this.constantValueViews[4] = (TextView) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_constant4_value);
 
-			// set up constant names and units
+			// set up constant names and units as well as default values
 			for (int constIdx = 0; constIdx < MAX_CONSTANTS && constIdx < sensorType.getAndroidValueNames().length; constIdx++) {
 				constantNameViews[constIdx].setText(sensorType.getAndroidValueNames()[constIdx] + ":");
 				constantUnitViews[constIdx].setText("(" + sensorType.getAndroidValueUnits()[constIdx] + ")");
+				constantValueViews[constIdx].setText(Float.toString(sensorType.getDefaultValues()[constIdx]));
 			}
 
 			//this.delayView = (ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_sensor_action_arguments_delay);
@@ -312,7 +313,7 @@ public class AppDetailFragment extends Fragment {
 
 			setupActionSpinner();
 			setupPerturbSpinner();
-		}
+		} // }}}
 
 		protected FirewallConfigMessage.Rule genRule () { // {{{
 
@@ -338,7 +339,7 @@ public class AppDetailFragment extends Fragment {
 
 			// TODO timestamp is currently unused by the service
 
-			svBuilder.setDefaultVal(sensorType.getRecommendedDefaultValue());
+			// protobuf's "default" section is being replaced with UI-imposed defaults
 
 			paramBuilder.setConstantValue(svBuilder.build());
 

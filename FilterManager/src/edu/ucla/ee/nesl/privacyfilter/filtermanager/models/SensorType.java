@@ -8,14 +8,23 @@ public class SensorType {
 	private String name;
 	
 	private static class AndroidSensorIdData {
-		public String sensorName;
-		public String[] valueNames;
-		public String[] valueUnits;
+		protected String sensorName;
+		protected String[] valueNames;
+		protected String[] valueUnits;
+		protected float[] defaultValues;
 
-		public AndroidSensorIdData (String newName, String[] newValueNames, String[] newValueUnits) {
+		protected AndroidSensorIdData (String newName, String[] newValueNames, String[] newValueUnits) {
 			this.sensorName = newName;
 			this.valueNames = newValueNames;
 			this.valueUnits = newValueUnits;
+
+			this.defaultValues= new float[]{0f, 0f, 0f, 0f, 0f}; // default value for the default values
+		}
+
+		protected AndroidSensorIdData (String newName, String[] newValueNames, String[] newValueUnits, float[] newDefaultValues) {
+			this(newName, newValueNames, newValueUnits);
+
+			this.defaultValues = newDefaultValues;
 		}
 	}
 
@@ -94,7 +103,7 @@ public class SensorType {
 		return androidSensorIdData[androidId].valueUnits;
 	}
 
-	public float getRecommendedDefaultValue () {
-		return 1.0f; // FIXME test value for now
+	public float[] getDefaultValues () {
+		return androidSensorIdData[androidId].defaultValues;
 	}
 }

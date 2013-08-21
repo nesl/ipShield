@@ -6,10 +6,11 @@
 		<string name="std_line_height">40sp</string>
 
 		<string-array name="fragment_app_detail_sensor_actions">
+			<!-- these names can be changed as long as the order is preserved -->
 			<item>Normal</item>
 			<item>Suppress</item>
 			<item>Replace</item> <!-- aka constant value -->
-			<!--<item>Delay</item>-->
+			<!--<item>Delay</item> this action has been removed-->
 			<item>Fuzz</item> <!-- aka perturb -->
 		</string-array>
 
