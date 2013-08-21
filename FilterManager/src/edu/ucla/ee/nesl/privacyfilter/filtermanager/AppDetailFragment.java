@@ -606,15 +606,15 @@ public class AppDetailFragment extends Fragment {
 
 		// record MY version name (version name of this instance of FilterManager)
 		// for compatability reasons in the gui state string
-		String versionName = "(undefined package version)";
+		String fmVersionName = "(undefined package version)";
 		try {
-			versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+			fmVersionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
 		} catch (PackageManager.NameNotFoundException pmE) {
 			Log.wtf(getClass().toString(), "My own package was not found in the package manager");
 			return null;
 		}
 		
-		state.put("filtermanager_version", versionName);
+		state.put("filtermanager_version", fmVersionName);
 
 		JSONArray serializedRules = new JSONArray();
 		for (SensorTypeRule rule : rules) {
@@ -626,6 +626,20 @@ public class AppDetailFragment extends Fragment {
 		return state;
 	} // }}}
 	public void restoreGuiState (JSONObject state) throws JSONException { // {{{
+		// check version for compatibility
+		String fmVersionName = "(undefined package version)";
+		try {
+			fmVersionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+		} catch (PackageManager.NameNotFoundException pmE) {
+			Log.wtf(getClass().toString(), "My own package was not found in the package manager");
+			return;
+		}
+
+		if (state.getString("filtermanager_version").equals("(undefined package version)") || (! state.getString("filtermanager_version").equals(fmVersionName))) {
+			Log.e(getClass().toString(), "Stored GUI state is from an out-of-date version or is unrecognized");
+			return;
+		}
+
 		JSONArray serializedRules = state.getJSONArray("rules");
 
 		for (int sRuleIdx = 0; sRuleIdx < serializedRules.length(); sRuleIdx++) {
