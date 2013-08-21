@@ -38,7 +38,17 @@ public class AppViewAdapter extends ArrayAdapter<AppFilterData> {
 		view.setTag(new AppId(app.getApplicationInfo()));
 		((ImageView) view.findViewById(R.id.app_list_entry_icon)).setImageDrawable(app.getIcon());
 		((TextView) view.findViewById(R.id.app_list_entry_title)).setText(app.toString());
-		//((TextView) view.findViewById(R.id.app_list_entry_subtitle)).setText("Sensors: Acl Gyr Loc Mic");
+
+		int numSensorsUsed = app.getSensorsUsed().size();
+		String plural = "s";
+		if (numSensorsUsed == 1) {
+			plural = "";
+		}
+		String sensorUseMessage = "";
+		if (numSensorsUsed > 0) {
+			sensorUseMessage = Integer.toString(numSensorsUsed) + " sensor" + plural + " used";
+		}
+		((TextView) view.findViewById(R.id.app_list_entry_subtitle)).setText(sensorUseMessage);
 		//((TextView) view.findViewById(R.id.app_list_entry_status)).setText("BASE");
 
 		return view;
