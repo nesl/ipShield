@@ -59,13 +59,6 @@
 	</RelativeLayout>
 	<!-- }}} -->
 
-	<!--<ListView
-		android:id="@+id/fragment_app_detail_inferences"
-		android:layout_width="match_parent"
-		android:layout_height="128sp"
-		android:layout_below="@id/fragment_app_detail_header"
-	/>-->
-
 	<ScrollView
 		android:id="@+id/fragment_app_detail_sensors_scroll"
 		android:layout_width="match_parent"
@@ -79,11 +72,19 @@
 			android:orientation="vertical"
 		>
 			<LinearLayout
+				android:id="@+id/fragment_app_detail_inferences"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+			/>
+
+			<LinearLayout
 				android:id="@+id/fragment_app_detail_sensors"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
 			/>
+
 			<Button
 				android:id="@+id/fragment_app_detail_apply_button"
 				android:layout_width="match_parent"

@@ -1,5 +1,7 @@
 package edu.ucla.ee.nesl.privacyfilter.filtermanager.models;
 
+// imports {{{
+
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,17 +17,25 @@ import android.util.Base64;
 
 import android.util.Log;
 
+import android.database.*;
+import android.database.sqlite.*;
+
+
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.SensorType;
+import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.InferenceMethod;
 
 import com.google.protobuf.*;
 import android.os.FirewallConfigManager;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.io.protobuf.FirewallConfigMessage;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.io.protobuf.SensorCountMessage;
 
+// }}}
 
 public class AppFilterData {
 	public static final String APP_TRACKER_FILE = "/data/sensor-counter";
+	public static final String INFERENCE_DB_FILE = "/data/data/edu.ucla.ee.nesl.privacyfilter.filtermanager/databases/inference.db";
 
+	// convenience {{{
 	public static byte[] readBytes (String filePath) {
 		byte[] buf;
 		
@@ -48,23 +58,19 @@ public class AppFilterData {
 
 		return buf;
 	}
+	// }}}
 
 	private Context context;
 	private PackageManager pm;
 	private ApplicationInfo pmAppInfo; // app info from some package manager object
 
-	//private FirewallConfig fwConf;
+	private ArrayList<SensorType> sensorsUsed;
+	private ArrayList<InferenceMethod> inferenceMethods = null; // per the inference database, this should list all methods by which this app could obtain an inference
+	private ArrayList<Inference> inferences = null; // per the inference database, this should list all inferences that this app could obtain
 
-	private ArrayList<SensorType> sensorsUsed = new ArrayList<SensorType>();
+	private ArrayList<SensorType> detectSensorsUsed () { // {{{
+		ArrayList<SensorType> detectedSensorsUsed = new ArrayList<SensorType>();
 
-	public AppFilterData (Context baseContext, ApplicationInfo basePmAppInfo) {
-		this.context = baseContext;
-		this.pm = this.context.getPackageManager();
-		this.pmAppInfo = basePmAppInfo;
-
-		// TODO initialize this.fwConf??
-
-		// detect sensors used
 		byte[] rawSensorBytes = readBytes(APP_TRACKER_FILE);
 
 		try {
@@ -77,7 +83,7 @@ public class AppFilterData {
 					for (int sensorIdx = 0; sensorIdx < appEntry.getSensorEntryCount(); sensorIdx++) {
 						// index of the sensor in the sensorEntry array corresponds the sensor's android ID
 						if (appEntry.getSensorEntry(sensorIdx).getCount() > 0) {
-							this.sensorsUsed.add(SensorType.defineFromAndroid(sensorIdx));
+							detectedSensorsUsed.add(SensorType.defineFromAndroid(sensorIdx));
 						}
 					}
 				}
@@ -85,35 +91,98 @@ public class AppFilterData {
 		} catch (InvalidProtocolBufferException protoE) {
 			Log.e(getClass().toString(), "Caught an exception: " + protoE.toString());
 		}
-	}
 
-	public ApplicationInfo getApplicationInfo () {
-		return pmAppInfo;
-	}
+		return detectedSensorsUsed;
+	} // }}}
 
-	public String toString () {
+	private void createSensorsAvailableTable (SQLiteDatabase db, ArrayList<Integer> dbSensorTypesAvailable) throws SQLException { // {{{
+		db.execSQL("CREATE TEMPORARY TABLE SensorsAvailable (sensorID INT, FOREIGN KEY (sensorID) REFERENCES Sensors(sensorID));");
+
+		if (dbSensorTypesAvailable.size() > 0) { // add sensor types the table
+			String sensorsAvailSql = "INSERT INTO SensorsAvailable VALUES ";
+
+			for (int dbSType : dbSensorTypesAvailable) {
+				sensorsAvailSql += "(" + Integer.toString(dbSType) + "), ";
+			}
+
+			int finalDbSType = dbSensorTypesAvailable.get(dbSensorTypesAvailable.size() - 1);
+			sensorsAvailSql += "(" + Integer.toString(finalDbSType) + ");";
+
+			// not using Android's insert method because it does not support multiple rows
+			db.execSQL(sensorsAvailSql);
+		}
+	} // }}}
+	private ArrayList<InferenceMethod> queryForInferenceMethods  () { // {{{
+		int[] methodIds;
+
+		ArrayList<Integer> dbSensorTypesAvailable = new ArrayList<Integer>();
+		for (SensorType st : getSensorsUsed()) {
+			dbSensorTypesAvailable.add(st.getDbId());
+		}
+		SQLiteDatabase db = SQLiteDatabase.openDatabase(INFERENCE_DB_FILE, null, SQLiteDatabase.OPEN_READWRITE);
+		db.beginTransaction();
+		try {
+			createSensorsAvailableTable(db, dbSensorTypesAvailable);
+
+			Cursor iMethodsC = db.rawQuery("SELECT DISTINCT methodID FROM Requirements EXCEPT SELECT methodID FROM Requirements LEFT JOIN SensorsAvailable ON (Requirements.sensorID = SensorsAvailable.sensorID) WHERE SensorsAvailable.sensorID IS NULL;", null);
+			methodIds = new int[iMethodsC.getCount()];
+			for (int methIdx = 0; methIdx < methodIds.length; methIdx++) {
+				iMethodsC.moveToPosition(methIdx);
+				methodIds[methIdx] = iMethodsC.getInt(0);
+			}
+
+			db.execSQL("DROP TABLE SensorsAvailable;");
+			db.setTransactionSuccessful();
+
+		} finally {
+			db.endTransaction();
+		}
+		db.close();
+
+		ArrayList<InferenceMethod> methods = new ArrayList<InferenceMethod>();
+		for (int mId : methodIds) {
+			methods.add(new InferenceMethod(mId));
+		}
+
+		return methods;
+	} // }}}
+
+	public AppFilterData (Context baseContext, ApplicationInfo basePmAppInfo) { // {{{
+		this.context = baseContext;
+		this.pm = this.context.getPackageManager();
+		this.pmAppInfo = basePmAppInfo;
+
+		sensorsUsed = detectSensorsUsed();
+	} // }}}
+
+	public String toString () { // {{{
 		return (String) pmAppInfo.loadLabel(pm);
-	}
-
-	public Drawable getIcon () {
-		return pm.getApplicationIcon(pmAppInfo);
-	}
-
-	public ArrayList<Inference> getInferences () {
-		ArrayList<Inference> infs = new ArrayList<Inference>();
-		infs.add(new Inference(0));
-		infs.add(new Inference(1));
-		infs.add(new Inference(2));
-		infs.add(new Inference(3));
-
-		return infs;
-	}
-	
-	public ArrayList<SensorType> getSensorsUsed () {
-		return sensorsUsed;
-	}
-
-	public String getPackageName() {
+	} // }}}
+	public ApplicationInfo getApplicationInfo () { // {{{
+		return pmAppInfo;
+	} // }}}
+	public String getPackageName() { // {{{
 		return pmAppInfo.packageName;
-	}
+	} // }}}
+	public Drawable getIcon () { // {{{
+		return pm.getApplicationIcon(pmAppInfo);
+	} // }}}
+
+	public ArrayList<InferenceMethod> getInferenceMethods () { // {{{
+		if (inferenceMethods == null) {
+			inferenceMethods = queryForInferenceMethods();
+		}
+
+		return inferenceMethods;
+	} // }}}
+	public ArrayList<Inference> getInferences () { // {{{
+		if (inferenceMethods == null) {
+			inferences = Inference.getInferencesFromMethods(getInferenceMethods());
+		}
+
+		return inferences;
+	} // }}}
+	public ArrayList<SensorType> getSensorsUsed () { // {{{
+		return sensorsUsed;
+	} // }}}
 }

@@ -1,13 +1,17 @@
 package edu.ucla.ee.nesl.privacyfilter.filtermanager.models;
 
 import android.util.Log;
+import android.database.*;
+import android.database.sqlite.*;
 
 public class SensorType {
+	private static final int DBID_UNDEFINED = -1;
+
 	private int dbId; // the sensors ID in our database
 	private int androidId; // the sensor type constant according to android
 	private String name;
 	
-	private static class AndroidSensorIdData {
+	private static class AndroidSensorIdData { // {{{
 		protected String sensorName;
 		protected String[] valueNames;
 		protected String[] valueUnits;
@@ -26,9 +30,9 @@ public class SensorType {
 
 			this.defaultValues = newDefaultValues;
 		}
-	}
+	} // }}}
 
-	private static AndroidSensorIdData[] androidSensorIdData = {
+	private static AndroidSensorIdData[] androidSensorIdData = { // {{{
 		/* 0x00 */ new AndroidSensorIdData("(Unused sensor ID)", new String[]{}, new String[]{}),
 		/* 0x01 */ new AndroidSensorIdData("Accelerometer", new String[]{"X", "Y", "Z"}, new String[]{"m/s\u00b2", "m/s\u00b2", "m/s\u00b2"}),
 		/* 0x02 */ new AndroidSensorIdData("Magnetic field", new String[]{"X", "Y", "Z"}, new String[]{"\u03bcT", "\u03bcT", "\u03bcT"}),
@@ -47,63 +51,73 @@ public class SensorType {
 		/* 0x0f */ new AndroidSensorIdData("Game rotation vector", new String[]{"X", "Y", "Z", "\u03b8", "Accuracy"}, new String[]{"unitless", "unitless", "unitless", "radians", "radians"}),
 		/* 0x10 */ new AndroidSensorIdData("Gyroscope (uncalibrated)", new String[]{"Uncalib. X", "Uncalib. Y", "Uncalib. Z"}, new String[]{"rad/s", "rad/s", "rad/s"}),
 		/* 0x11 */ new AndroidSensorIdData("Significant motion", new String[]{"Motion"}, new String[]{"unitless"})
-	};
+	}; // }}}
 
-	public boolean equals (SensorType s) {
+	public boolean equals (SensorType s) { // {{{
 		// for now we are only concerning ourselves with sensors of which the android API is aware
 		return (this.androidId == s.androidId);
-	}
-
-	public int hashCode () {
+	} // }}}
+	public int hashCode () { // {{{
 		return this.androidId;
-	}
+	} // }}}
 
-	public static SensorType defineFromDb (int dbId) {
+	private SensorType () { // this class should not be instantiated directly {{{
+	} /// }}}
+	public static SensorType defineFromDb (int dbId) { // {{{
 		SensorType st = new SensorType();
 		st.dbId = dbId;
 
-		st.name = "DB not set up";
+		SQLiteDatabase db = SQLiteDatabase.openDatabase(AppFilterData.INFERENCE_DB_FILE, null, SQLiteDatabase.OPEN_READONLY);
+
+		Cursor result = db.query("AndroidSensorIDs", new String[]{"androidSensorID"}, "sensorID = ?", new String[]{Integer.toString(st.dbId)}, null, null, null, "1");
+		result.moveToFirst();
+		st.androidId = result.getInt(0);
+
+		db.close();
 
 		return st;
-	}
-
-	public static SensorType defineFromAndroid (int baseAndroidId) {
+	} // }}}
+	public static SensorType defineFromAndroid (int androidId) { // {{{
 		SensorType st = new SensorType();
-		st.androidId = baseAndroidId;
+		st.androidId = androidId;
+		st.dbId = DBID_UNDEFINED;
 
 		st.name = androidSensorIdData[st.androidId].sensorName;
 
 		return st;
-	}
-	
-	private SensorType () {
-	}
+	} // }}}
 
-	public String toString () {
+	public String toString () { // {{{
 		return getName();
-	}
-	
-	public String getName () {
+	} // }}}
+	public String getName () { // {{{
 		return name;
-	}
-	
-	public int getDbId () {
-		return dbId;
-	}
-	
-	public int getAndroidId () {
+	} // }}}
+	public int getDbId () { // {{{
+		if (dbId != DBID_UNDEFINED) {
+			return dbId;
+		} else {
+			SQLiteDatabase db = SQLiteDatabase.openDatabase(AppFilterData.INFERENCE_DB_FILE, null, SQLiteDatabase.OPEN_READONLY);
+
+			Cursor result = db.query("AndroidSensorIDs", new String[]{"sensorID"}, "androidSensorID = ?", new String[]{Integer.toString(this.androidId)}, null, null, null, "1");
+			result.moveToFirst();
+			this.dbId = result.getInt(0);
+
+			db.close();
+
+			return this.dbId;
+		}
+	} // }}}
+	public int getAndroidId () { // {{{
 		return androidId;
-	}
-
-	public String[] getAndroidValueNames () {
+	} // }}}
+	public String[] getAndroidValueNames () { // {{{
 		return androidSensorIdData[androidId].valueNames;
-	}
-
-	public String[] getAndroidValueUnits () {
+	} // }}}
+	public String[] getAndroidValueUnits () { // {{{
 		return androidSensorIdData[androidId].valueUnits;
-	}
-
-	public float[] getDefaultValues () {
+	} // }}}
+	public float[] getDefaultValues () { // {{{
 		return androidSensorIdData[androidId].defaultValues;
-	}
+	} // }}}
 }

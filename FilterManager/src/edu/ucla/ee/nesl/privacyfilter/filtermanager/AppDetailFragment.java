@@ -37,6 +37,7 @@ import org.json.JSONException;
 
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppFilterData;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppId;
+import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.InferenceMethod;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.Inference;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.SensorType;
 
@@ -613,6 +614,16 @@ public class AppDetailFragment extends Fragment {
 				getActivity().finish();
 			}
 		});
+		
+		LayoutInflater infInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		ViewGroup infViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_inferences);
+		for (Inference inference : app.getInferences()) {
+			ViewGroup infView = (ViewGroup) infInflater.inflate(R.layout.fragment_app_detail_inference, infViews, false);
+
+			((TextView) infView.findViewById(R.id.fragment_app_detail_inference_name)).setText(inference.getName());
+
+			infViews.addView(infView);
+		}
 
 		return rootView;
 	}
