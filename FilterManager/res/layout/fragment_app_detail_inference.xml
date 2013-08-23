@@ -48,19 +48,37 @@
 			/>
 		</LinearLayout>
 
-		<TextView
-			android:id="@+id/fragment_app_detail_inference_action"
+		<LinearLayout
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight=".22"
-			android:paddingTop="6dp"
-			android:paddingBottom="6dp"
-			android:textSize="18sp"
-			android:gravity="center"
 			android:layout_gravity="center_vertical"
-			android:clickable="true"
-			android:background="@drawable/back"
-			android:text="@string/fragment_app_detail_inference_action_allow"
-		/>
+			android:orientation="vertical"
+		>
+			<TextView
+				android:id="@+id/fragment_app_detail_inference_action"
+				android:layout_height="wrap_content"
+				android:layout_width="match_parent"
+				android:paddingTop="6dp"
+				android:paddingBottom="6dp"
+				android:textSize="18sp"
+				android:gravity="center"
+				android:clickable="true"
+				android:background="@drawable/back"
+				android:text="@string/fragment_app_detail_inference_action_allow"
+			/>
+
+			<EditText
+				android:id="@+id/fragment_app_detail_inference_priority"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:editable="true"
+				android:inputType="number"
+				android:digits="0123456789"
+				android:hint="Pri?"
+				android:textSize="10sp"
+			/>
+		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

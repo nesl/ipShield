@@ -549,6 +549,7 @@ public class AppDetailFragment extends Fragment {
 
 		private View ruleView;
 		private TextView actionView;
+		private TextView priorityView;
 
 		// }}}
 
@@ -595,6 +596,8 @@ public class AppDetailFragment extends Fragment {
 				((ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_inference_methods)).addView(methTV);
 			}
 
+			this.priorityView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_inference_priority);
+
 			setupActionToggler();
 		} // }}}
 
@@ -622,6 +625,15 @@ public class AppDetailFragment extends Fragment {
 			// around behind the user's back
 		} // }}}
 
+		// returns the priority for this rule, or -1 if the user has not set a priority
+		public int getPriority () { // {{{
+			if (priorityView.getText().equals("")) {
+				return -1;
+			} else {
+				return str2int(priorityView.getText());
+			}
+		} // }}}
+
 		protected JSONObject saveGuiState () throws JSONException { // {{{
 			JSONObject state = new JSONObject();
 
@@ -629,11 +641,13 @@ public class AppDetailFragment extends Fragment {
 			state.put("inference_id", inference.getInferenceId());
 
 			state.put("selected_action", getSelectedAction());
+			state.put("priority", priorityView.getText());
 
 			return state;
 		} // }}}
 		protected void restoreGuiState (JSONObject state) throws JSONException { // {{{
 			setSelectedAction(state.getInt("selected_action"));
+			priorityView.setText(state.getString("priority"));
 		} // }}}
 	}
 
@@ -672,10 +686,13 @@ public class AppDetailFragment extends Fragment {
 	// in the GUI, the InferenceRule object will call this method to ensure that the
 	// underlying sensor rules (and their GUI) stay up to date
 	public void updateSensorRules () { // {{{
-		HashMap<Inference, Integer> inferencePreferences = new HashMap<Inference, Integer>();
+		HashMap<Inference, InferenceSensorMapper.InferencePreference> inferencePreferences = new HashMap<Inference, InferenceSensorMapper.InferencePreference>();
 		for (InferenceRule iRule : inferenceRules) {
 			int action = (iRule.getSelectedAction() == InferenceRule.ALLOW) ? InferenceSensorMapper.ALLOW : InferenceSensorMapper.DISALLOW;
-			inferencePreferences.put(iRule.getInference(), action);
+			int priority = iRule.getPriority();
+
+			InferenceSensorMapper.InferencePreference preference = new InferenceSensorMapper.InferencePreference(action, priority);
+			inferencePreferences.put(iRule.getInference(), preference);
 		}
 
 		HashMap<SensorType, Integer> sensorActionMap = InferenceSensorMapper.generateSensorMap(inferencePreferences, app.getSensorsUsed(), toleranceSlider.getProgress());
