@@ -9,7 +9,7 @@ public class SensorType {
 
 	private int dbId; // the sensors ID in our database
 	private int androidId; // the sensor type constant according to android
-	private String name;
+	private String name = null;
 	
 	private static class AndroidSensorIdData { // {{{
 		protected String sensorName;
@@ -31,7 +31,6 @@ public class SensorType {
 			this.defaultValues = newDefaultValues;
 		}
 	} // }}}
-
 	private static AndroidSensorIdData[] androidSensorIdData = { // {{{
 		/* 0x00 */ new AndroidSensorIdData("(Unused sensor ID)", new String[]{}, new String[]{}),
 		/* 0x01 */ new AndroidSensorIdData("Accelerometer", new String[]{"X", "Y", "Z"}, new String[]{"m/s\u00b2", "m/s\u00b2", "m/s\u00b2"}),
@@ -91,6 +90,10 @@ public class SensorType {
 		return getName();
 	} // }}}
 	public String getName () { // {{{
+		if (name == null) {
+			name = androidSensorIdData[getAndroidId()].sensorName;
+		}
+
 		return name;
 	} // }}}
 	public int getDbId () { // {{{

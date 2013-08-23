@@ -510,8 +510,13 @@ public class AppDetailFragment extends Fragment {
 
 	AppFilterData app; // the app whose data this fragment is open for editing
 
+	View rootView;
+
 	ViewGroup sensorViews; // the view containing the sensors
 	ArrayList<SensorTypeRule> rules = new ArrayList<SensorTypeRule>();
+
+	ViewGroup inferenceViews; // the view containing the inferences
+	
 
 	// this method generates a protobuf in base64 string form representing the app
 	public String genProtobuf64 () { // {{{
@@ -529,6 +534,105 @@ public class AppDetailFragment extends Fragment {
 		return serializedFirewallConfigProto;
 	} // }}}
 
+	private ViewGroup setupSensors () { // {{{
+		ViewGroup sensorViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_sensors);
+
+		LayoutInflater sensorInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		// for each sensor type...
+		for (SensorType sensorType : app.getSensorsUsed()) {
+			// create a rule for this sensor type
+			SensorTypeRule rule = new SensorTypeRule(sensorType);
+			
+			//prepare a View for editing of the rule for this sensor
+			ViewGroup ruleView = (ViewGroup) sensorInflater.inflate(R.layout.fragment_app_detail_sensor, sensorViews, false);
+			rule.setView(ruleView);
+
+			rules.add(rule);
+			sensorViews.addView(ruleView);
+		}
+
+		if (app.getSensorsUsed().size() == 0) { // there aren't any known sensors being used
+			TextView emptyMsg = new TextView(getActivity());
+			emptyMsg.setText("We haven't observed this app using any sensors.");
+			sensorViews.addView(emptyMsg);
+
+			// hide the apply button
+			((Button) rootView.findViewById(R.id.fragment_app_detail_apply_sensors)).setVisibility(View.GONE);
+		}
+
+		return sensorViews;
+	} // }}}
+	private ViewGroup setupInferences () { // {{{
+		ViewGroup inferenceViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_inferences);
+
+		LayoutInflater infInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		for (Inference inference : app.getInferences()) {
+			ViewGroup infView = (ViewGroup) infInflater.inflate(R.layout.fragment_app_detail_inference, inferenceViews, false);
+
+			((TextView) infView.findViewById(R.id.fragment_app_detail_inference_name)).setText(inference.getName());
+
+			for (InferenceMethod method : inference.getInferenceMethods()) {
+				String infDesc = Double.toString(method.getAccuracy()) + "% accuracy using: ";
+
+				for (SensorType sensor : method.getSensorsRequired()) {
+					infDesc += "\n\t* " + sensor.getName();
+				}
+
+				TextView methTV = new TextView(getActivity());
+				methTV.setText(infDesc);
+				((ViewGroup) infView.findViewById(R.id.fragment_app_detail_inference_methods)).addView(methTV);
+			}
+
+			inferenceViews.addView(infView);
+		}
+
+		if (app.getInferences().size() == 0) { // there aren't any known inferences
+			TextView emptyMsg = new TextView(getActivity());
+			emptyMsg.setText("We don't know of any inferences this app can make.");
+			inferenceViews.addView(emptyMsg);
+
+			// hide the apply button
+			((Button) rootView.findViewById(R.id.fragment_app_detail_apply_inferences)).setVisibility(View.GONE);
+		}
+
+		return inferenceViews;
+	} // }}}
+	private void setupApplyButton () { // {{{
+		((Button) rootView.findViewById(R.id.fragment_app_detail_apply_sensors)).setOnClickListener(new View.OnClickListener () {
+			public void onClick (View v) {
+				String serializedFirewallConfigProto = genProtobuf64();
+
+				FirewallConfigManager fwMgr = (FirewallConfigManager) getActivity().getSystemService(Context.FIREWALLCONFIG_SERVICE);
+				fwMgr.setFirewallConfig(serializedFirewallConfigProto);
+
+				getActivity().finish();
+			}
+		});
+	} // }}}
+	private void setupToggler () { // {{{
+		TextView toggler = (TextView) rootView.findViewById(R.id.fragment_app_detail_viewtoggle);
+		toggler.setOnClickListener(new View.OnClickListener () {
+			public void onClick (View v) {
+				TextView toggler = (TextView) rootView.findViewById(R.id.fragment_app_detail_viewtoggle);
+
+				View inf = rootView.findViewById(R.id.fragment_app_detail_inferences_scroll);
+				View sen = rootView.findViewById(R.id.fragment_app_detail_sensors_scroll);
+
+				if (inf.getVisibility() == View.VISIBLE) {
+					inf.setVisibility(View.GONE);
+					sen.setVisibility(View.VISIBLE);
+					toggler.setText(R.string.fragment_app_detail_viewtoggle_showingsensors);
+				} else if (sen.getVisibility() == View.VISIBLE) {
+					sen.setVisibility(View.GONE);
+					inf.setVisibility(View.VISIBLE);
+					toggler.setText(R.string.fragment_app_detail_viewtoggle_showinginferences);
+				}
+			}
+		});
+	} // }}}
+
 	// onCreate {{{
 
 	@Override
@@ -543,87 +647,24 @@ public class AppDetailFragment extends Fragment {
 	}
 
 	// }}}
-
 	// onCreateView {{{
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_app_detail, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		rootView = inflater.inflate(R.layout.fragment_app_detail, container, false);
 
 		if (app == null) {
 			Log.wtf(getClass().toString(), "Was instructed to show detail on an app but app was given as null");
 		}
 
-		sensorViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_sensors);
-		SensorManager sensorMgr = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-
-		LayoutInflater sensorInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-		// Set up a temporary header {{{
 		((TextView) rootView.findViewById(R.id.fragment_app_detail_title)).setText(app.toString());
 		((ImageView) rootView.findViewById(R.id.fragment_app_detail_icon)).setImageDrawable(app.getIcon());
 		//((TextView) rootView.findViewById(R.id.fragment_app_detail_subtitle)).setText("Sensors: Acl Gyr Loc Mic");
-		//((TextView) rootView.findViewById(R.id.fragment_app_detail_status)).setText("BASE");
-		// }}}
 
-//		// figure out which "types" of sensor are present on this device {{{
-//		ArrayList<Sensor> sensors = new ArrayList<Sensor>(sensorMgr.getSensorList(Sensor.TYPE_ALL));
-//		ArrayList<Integer> sensorTypes = new ArrayList<Integer>();
-//		for (int sIdx = 0; sIdx < sensors.size(); sIdx++) {
-//			int sType = sensors.get(sIdx).getType(); //SensorType.defineFromAndroid(sensors.get(sIdx).getType());
-//
-//			if (sensorTypes.contains(sType) == false) {
-//				sensorTypes.add(sType);
-//			}
-//		}
-//		// }}}
-		
-		ArrayList<SensorType> sensorTypes = app.getSensorsUsed();
-		
-		// for each sensor type...
-		for (int sTypeIdx = 0; sTypeIdx < sensorTypes.size(); sTypeIdx++) {
-			// create a rule for this sensor type
-			SensorTypeRule rule = new SensorTypeRule(sensorTypes.get(sTypeIdx));
-			
-			//prepare a View for editing of the rule for this sensor
-			ViewGroup ruleView = (ViewGroup) sensorInflater.inflate(R.layout.fragment_app_detail_sensor, sensorViews, false);
-
-			rule.setView(ruleView);
-
-			rules.add(rule);
-			sensorViews.addView(ruleView);
-		}
-
-		if (sensorTypes.size() == 0) { // there aren't any known sensors being used
-			TextView emptyMsg = new TextView(getActivity());
-			emptyMsg.setText("We haven't observed this app using any sensors.");
-			sensorViews.addView(emptyMsg);
-
-			// hide the apply button
-			((Button) rootView.findViewById(R.id.fragment_app_detail_apply_button)).setVisibility(View.GONE);
-		}
-
-		((Button) rootView.findViewById(R.id.fragment_app_detail_apply_button)).setOnClickListener(new View.OnClickListener () {
-			public void onClick (View v) {
-				String serializedFirewallConfigProto = genProtobuf64();
-
-				FirewallConfigManager fwMgr = (FirewallConfigManager) getActivity().getSystemService(Context.FIREWALLCONFIG_SERVICE);
-				fwMgr.setFirewallConfig(serializedFirewallConfigProto);
-
-				getActivity().finish();
-			}
-		});
-		
-		LayoutInflater infInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		ViewGroup infViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_inferences);
-		for (Inference inference : app.getInferences()) {
-			ViewGroup infView = (ViewGroup) infInflater.inflate(R.layout.fragment_app_detail_inference, infViews, false);
-
-			((TextView) infView.findViewById(R.id.fragment_app_detail_inference_name)).setText(inference.getName());
-
-			infViews.addView(infView);
-		}
+		sensorViews = setupSensors();
+		inferenceViews = setupInferences();
+		setupApplyButton();
+		setupToggler();
 
 		return rootView;
 	}

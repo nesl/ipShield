@@ -9,27 +9,33 @@ public class Inference {
 	private int inferenceId; // the inference's ID in the database
 	private String name;
 	private String description;
+	private ArrayList<InferenceMethod> methodsAvailable = null; // methods used to create this particular inference
 
-	public static ArrayList<Inference> getInferencesFromMethods (ArrayList<InferenceMethod> methods) {
+	// methods is assumed to be a unique list (i.e. one obtained from our DB query which has the "DISTINCT" stipulation)
+	public static ArrayList<Inference> getInferencesFromMethods (ArrayList<InferenceMethod> methods) { // {{{
 		ArrayList<Inference> inferences = new ArrayList<Inference>();
 		for (InferenceMethod method : methods) {
 			Inference inference = new Inference(method.getInferenceId());
 
-			boolean alreadyExists = false;
-			for (Inference prevInf : inferences) {
-				if (inference.getInferenceId() == prevInf.getInferenceId()) {
-					alreadyExists = true;
+			Inference target = null;
+			for (Inference cur : inferences) {
+				if (inference.getInferenceId() == cur.getInferenceId()) {
+					target = cur;
 				}
 			}
-			if (! alreadyExists) {
-				inferences.add(inference);
+
+			if (target == null) {
+				target = inference;
+				inferences.add(target);
 			}
+
+			target.methodsAvailable.add(method);
 		}
 
 		return inferences;
-	}
+	} // }}}
 
-	public Inference (int inferenceId) {
+	private Inference (int inferenceId) { // {{{
 		this.inferenceId = inferenceId;
 
 		SQLiteDatabase db = SQLiteDatabase.openDatabase(AppFilterData.INFERENCE_DB_FILE, null, SQLiteDatabase.OPEN_READONLY);
@@ -38,7 +44,9 @@ public class Inference {
 		this.name = result.getString(0);
 		this.description = result.getString(1);
 		db.close();
-	}
+
+		this.methodsAvailable = new ArrayList<InferenceMethod>();
+	} // }}}
 
 	public int getInferenceId () {
 		return inferenceId;
@@ -48,5 +56,9 @@ public class Inference {
 	}
 	public String getDescription () {
 		return description;
+	}
+
+	public ArrayList<InferenceMethod> getInferenceMethods () {
+		return methodsAvailable;
 	}
 }

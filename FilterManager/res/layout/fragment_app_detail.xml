@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".AppDetailFragment"
 	android:layout_width="match_parent"
@@ -8,12 +8,13 @@
 	android:paddingBottom="4dp"
 	android:paddingLeft="4dp"
 	android:paddingRight="4dp"
+	android:orientation="vertical"
 >
 	<!-- Header {{{ -->
 	<RelativeLayout
 		android:id="@+id/fragment_app_detail_header"
 		android:layout_width="match_parent"
-		android:layout_height="64sp"
+		android:layout_height="64dp"
 		android:paddingTop="4dp"
 		android:paddingBottom="4dp"
 	>
@@ -23,7 +24,6 @@
 			android:layout_width="64sp"
 			android:layout_alignParentTop="true"
 			android:layout_alignParentLeft="true"
-			android:layout_alignParentBottom="true"
 			android:paddingRight="4dp"
 		/>
 
@@ -48,49 +48,84 @@
 		/>
 
 		<TextView
-			android:id="@+id/fragment_app_detail_status"
-			android:layout_width="76sp"
-			android:layout_height="64sp"
+			android:id="@+id/fragment_app_detail_viewtoggle"
+			android:layout_width="52sp"
+			android:layout_height="wrap_content"
 			android:layout_alignParentTop="true"
 			android:layout_alignParentRight="true"
-			android:layout_alignParentBottom="true"
-			android:textSize="28sp"
+			android:background="@drawable/back"
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp"
+			android:textSize="20sp"
+			android:gravity="center"
+			android:layout_gravity="center_vertical"
+			android:clickable="true"
+			android:text="@string/fragment_app_detail_viewtoggle_showinginferences"
 		/>
 	</RelativeLayout>
 	<!-- }}} -->
 
-	<ScrollView
-		android:id="@+id/fragment_app_detail_sensors_scroll"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/fragment_app_detail_header"
-		android:scrollbars="vertical"
 	>
-		<LinearLayout
+		<!-- Inferences {{{ -->
+		<ScrollView
+			android:id="@+id/fragment_app_detail_inferences_scroll"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
+			android:scrollbars="vertical"
+			android:visibility="visible"
 		>
 			<LinearLayout
-				android:id="@+id/fragment_app_detail_inferences"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-			/>
+			>
+				<LinearLayout
+					android:id="@+id/fragment_app_detail_inferences"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+				/>
 
+				<Button
+					android:id="@+id/fragment_app_detail_apply_inferences"
+					android:layout_width="match_parent"
+					android:layout_height="64dp"
+					android:text="Apply"
+				/>
+			</LinearLayout>
+		</ScrollView>
+		<!-- }}} -->
+		<!-- Sensors {{{ -->
+		<ScrollView
+			android:id="@+id/fragment_app_detail_sensors_scroll"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:scrollbars="vertical"
+			android:visibility="gone"
+		>
 			<LinearLayout
-				android:id="@+id/fragment_app_detail_sensors"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-			/>
+			>
+				<LinearLayout
+					android:id="@+id/fragment_app_detail_sensors"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+				/>
 
-			<Button
-				android:id="@+id/fragment_app_detail_apply_button"
-				android:layout_width="match_parent"
-				android:layout_height="64dp"
-				android:text="Apply"
-			/>
-		</LinearLayout>
-	</ScrollView>
-</RelativeLayout>
+				<Button
+					android:id="@+id/fragment_app_detail_apply_sensors"
+					android:layout_width="match_parent"
+					android:layout_height="64dp"
+					android:text="Apply"
+				/>
+			</LinearLayout>
+		</ScrollView>
+		<!-- }}} -->
+	</LinearLayout>
+</LinearLayout>

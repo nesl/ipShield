@@ -35,4 +35,7 @@
     <string name="minutes">Mins</string>
     <string name="seconds">Secs</string>
     <string name="milliseconds">ms</string>
+
+		<string name="fragment_app_detail_viewtoggle_showinginferences"><u>In</u> S</string>
+		<string name="fragment_app_detail_viewtoggle_showingsensors">In <u>S</u></string>
 </resources>
