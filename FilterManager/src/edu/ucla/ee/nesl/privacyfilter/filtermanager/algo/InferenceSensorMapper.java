@@ -13,7 +13,7 @@ public class InferenceSensorMapper {
 	public static final int DISALLOW = 0;
 	public static final int ALLOW = 1;
 
-	public static HashMap<SensorType, Integer> generateSensorMap (HashMap<Inference, Integer> inferencePreferences, ArrayList<SensorType> allSensorsAvailable) {
+	public static HashMap<SensorType, Integer> generateSensorMap (HashMap<Inference, Integer> inferencePreferences, ArrayList<SensorType> allSensorsAvailable, int sensorTolerance) {
 		HashMap<SensorType, Integer> sensorMap = new HashMap<SensorType, Integer>();
 
 		for (Inference inference : inferencePreferences.keySet()) {

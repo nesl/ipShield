@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.SeekBar;
 import android.widget.Button;
 import android.text.method.DigitsKeyListener;
 
@@ -96,9 +97,11 @@ public class AppDetailFragment extends Fragment {
 
 	// SensorTypeRule {{{
 
-	// represents a single stipulation about what to do with one sensor type re the
+	// represents a single stipulation about what to do with one sensor-type re the
 	// app in question
 	// i.e., one "action" so to speak
+	//
+	// also manages the underlying GUI elements
 
 	public class SensorTypeRule {
 		private static final int MAX_CONSTANTS = 5;
@@ -533,6 +536,8 @@ public class AppDetailFragment extends Fragment {
 	// represents a single stipulation about what to do with one inference re the
 	// app in question
 	// i.e., one "blacklist/whitelist rule" so to speak
+	//
+	// also manages the underlying GUI elements
 
 	public class InferenceRule {
 		public static final int DISALLOW = 0;
@@ -557,7 +562,7 @@ public class AppDetailFragment extends Fragment {
 			return inference;
 		}
 
-		private void setupActionToggler () {
+		private void setupActionToggler () { // {{{
 			this.actionView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_inference_action);
 
 			this.actionView.setOnClickListener(new View.OnClickListener () {
@@ -571,7 +576,7 @@ public class AppDetailFragment extends Fragment {
 					updateSensorRules();
 				}
 			});
-		}
+		} // }}}
 
 		protected void setView (View ruleView) { // {{{
 			this.ruleView = ruleView;
@@ -634,15 +639,17 @@ public class AppDetailFragment extends Fragment {
 
 	// }}}
 
-	AppFilterData app; // the app whose privacy settings we're configuring on this screen
+	private AppFilterData app; // the app whose privacy settings we're configuring on this screen
 
-	View rootView;
+	private View rootView;
 
-	ViewGroup sensorViews; // the view containing the sensors
-	ArrayList<SensorTypeRule> sensorRules = new ArrayList<SensorTypeRule>();
+	private ViewGroup sensorViews; // the view containing the sensors
+	private ArrayList<SensorTypeRule> sensorRules = new ArrayList<SensorTypeRule>();
 
-	ViewGroup inferenceViews; // the view containing the inferences
-	ArrayList<InferenceRule> inferenceRules = new ArrayList<InferenceRule>();
+	private ViewGroup inferenceViews; // the view containing the inferences
+	private ArrayList<InferenceRule> inferenceRules = new ArrayList<InferenceRule>();
+
+	private SeekBar toleranceSlider;
 
 	// this method generates a protobuf in base64 string form representing the app
 	public String genProtobuf64 () { // {{{
@@ -660,6 +667,10 @@ public class AppDetailFragment extends Fragment {
 		return serializedFirewallConfigProto;
 	} // }}}
 
+	// this is the method that actually invokes the algo package
+	// any time any of our InferenceRule objects detects the user has changed an interface rule
+	// in the GUI, the InferenceRule object will call this method to ensure that the
+	// underlying sensor rules (and their GUI) stay up to date
 	public void updateSensorRules () { // {{{
 		HashMap<Inference, Integer> inferencePreferences = new HashMap<Inference, Integer>();
 		for (InferenceRule iRule : inferenceRules) {
@@ -667,7 +678,7 @@ public class AppDetailFragment extends Fragment {
 			inferencePreferences.put(iRule.getInference(), action);
 		}
 
-		HashMap<SensorType, Integer> sensorActionMap = InferenceSensorMapper.generateSensorMap(inferencePreferences, app.getSensorsUsed());
+		HashMap<SensorType, Integer> sensorActionMap = InferenceSensorMapper.generateSensorMap(inferencePreferences, app.getSensorsUsed(), toleranceSlider.getProgress());
 
 		for (SensorType sensor : sensorActionMap.keySet()) {
 			SensorTypeRule sensorRule = null;
@@ -686,6 +697,8 @@ public class AppDetailFragment extends Fragment {
 		}
 	} // }}}
 
+
+	// these guys are convenience methods that are used in the set-up of the Fragment GUI
 	private ViewGroup setupSensors () { // {{{
 		ViewGroup sensorViews = (ViewGroup) rootView.findViewById(R.id.fragment_app_detail_sensors);
 
@@ -787,6 +800,23 @@ public class AppDetailFragment extends Fragment {
 			}
 		});
 	} // }}}
+	private SeekBar setupSensorToleranceSlider() { // {{{
+		SeekBar toleranceSlider = (SeekBar) rootView.findViewById(R.id.fragment_app_detail_inferences_sensortolerance);
+
+		toleranceSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener () {
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				((TextView) rootView.findViewById(R.id.fragment_app_detail_inferences_sensortolerance_label)).setText("Sensor tolerance: " + Integer.toString(progress));
+			}
+
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
+
+		return toleranceSlider;
+	} // }}}
 
 	// onCreate {{{
 
@@ -820,6 +850,7 @@ public class AppDetailFragment extends Fragment {
 		inferenceViews = setupInferences();
 		setupApplyButtons();
 		setupToggler();
+		toleranceSlider = setupSensorToleranceSlider();
 
 		return rootView;
 	}
@@ -852,6 +883,8 @@ public class AppDetailFragment extends Fragment {
 			serializedInferenceRules.put(iRule.saveGuiState());
 		}
 		state.put("inference_rules", serializedInferenceRules);
+
+		state.put("sensor_tolerance", toleranceSlider.getProgress());
 
 		return state;
 	} // }}}
@@ -889,6 +922,8 @@ public class AppDetailFragment extends Fragment {
 				}
 			}
 		}
+
+		toleranceSlider.setProgress(state.getInt("sensor_tolerance"));
 	} // }}}
 
 	public void onPause() { // {{{

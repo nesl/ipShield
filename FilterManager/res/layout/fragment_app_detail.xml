@@ -80,8 +80,24 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:paddingTop="8dp"
 				android:orientation="vertical"
 			>
+				<TextView
+					android:id="@+id/fragment_app_detail_inferences_sensortolerance_label"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="Sensor tolerance: 1"
+				/>
+
+				<SeekBar
+					android:id="@+id/fragment_app_detail_inferences_sensortolerance"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:max="16"
+					android:progress="1"
+				/>
+
 				<LinearLayout
 					android:id="@+id/fragment_app_detail_inferences"
 					android:layout_width="match_parent"
