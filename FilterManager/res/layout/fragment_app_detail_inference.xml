@@ -60,7 +60,7 @@
 			android:layout_gravity="center_vertical"
 			android:clickable="true"
 			android:background="@drawable/back"
-			android:text="@string/fragment_app_detail_inference_action_whitelist"
+			android:text="@string/fragment_app_detail_inference_action_allow"
 		/>
 	</LinearLayout>
 </LinearLayout>

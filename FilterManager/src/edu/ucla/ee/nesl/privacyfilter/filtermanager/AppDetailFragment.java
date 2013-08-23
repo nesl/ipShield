@@ -3,6 +3,7 @@ package edu.ucla.ee.nesl.privacyfilter.filtermanager;
 // imports {{{
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 //import android.os.Parcel;
 //import android.os.Parcelable;
@@ -40,6 +41,8 @@ import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppId;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.InferenceMethod;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.Inference;
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.SensorType;
+
+import edu.ucla.ee.nesl.privacyfilter.filtermanager.algo.InferenceSensorMapper;
 
 import com.google.protobuf.*;
 import android.os.FirewallConfigManager;
@@ -519,8 +522,8 @@ public class AppDetailFragment extends Fragment {
 
 			this.fromHourView.setText("00");
 			this.toHourView.setText("00");
-			this.fromMinuteView.setText("00");
-			this.toMinuteView.setText("00");
+			this.fromMinuteView.setText("23");
+			this.toMinuteView.setText("59");
 		} // }}}
 	}
 
@@ -532,10 +535,10 @@ public class AppDetailFragment extends Fragment {
 	// i.e., one "blacklist/whitelist rule" so to speak
 
 	public class InferenceRule {
-		public static final int WHITELIST = 0;
-		public static final int BLACKLIST = 1;
+		public static final int DISALLOW = 0;
+		public static final int ALLOW = 1;
 		private Inference inference;
-		private int selectedAction = WHITELIST;
+		private int selectedAction = ALLOW;
 
 		// View members {{{
 
@@ -559,11 +562,13 @@ public class AppDetailFragment extends Fragment {
 
 			this.actionView.setOnClickListener(new View.OnClickListener () {
 				public void onClick (View v) {
-					if (getSelectedAction() == BLACKLIST) {
-						setSelectedAction(WHITELIST);
+					if (getSelectedAction() == DISALLOW) {
+						setSelectedAction(ALLOW);
 					} else {
-						setSelectedAction(BLACKLIST);
+						setSelectedAction(DISALLOW);
 					}
+
+					updateSensorRules();
 				}
 			});
 		}
@@ -595,13 +600,21 @@ public class AppDetailFragment extends Fragment {
 			selectedAction = action;
 
 			switch (action) {
-				case WHITELIST:
-					actionView.setText(R.string.fragment_app_detail_inference_action_whitelist);
+				case ALLOW:
+					actionView.setText(R.string.fragment_app_detail_inference_action_allow);
 					break;
-				case BLACKLIST:
-					actionView.setText(R.string.fragment_app_detail_inference_action_blacklist);
+				case DISALLOW:
+					actionView.setText(R.string.fragment_app_detail_inference_action_disallow);
 					break;
 			}
+
+			// don't ALWAYS want to update sensor rules, so don't do it here
+			// ---only do it when the user physically interacts with the GUI
+			// otherwise we might screw something up when restoring the GUI
+			// automatically from the JSON file, or some other situation
+			// where we don't actually want the system to change the
+			// sensor rules and their corresponding widgets
+			// around behind the user's back
 		} // }}}
 
 		protected JSONObject saveGuiState () throws JSONException { // {{{
@@ -645,6 +658,32 @@ public class AppDetailFragment extends Fragment {
 		String serializedFirewallConfigProto = Base64.encodeToString(fwConfig.toByteArray(), Base64.DEFAULT);
 
 		return serializedFirewallConfigProto;
+	} // }}}
+
+	public void updateSensorRules () { // {{{
+		HashMap<Inference, Integer> inferencePreferences = new HashMap<Inference, Integer>();
+		for (InferenceRule iRule : inferenceRules) {
+			int action = (iRule.getSelectedAction() == InferenceRule.ALLOW) ? InferenceSensorMapper.ALLOW : InferenceSensorMapper.DISALLOW;
+			inferencePreferences.put(iRule.getInference(), action);
+		}
+
+		HashMap<SensorType, Integer> sensorActionMap = InferenceSensorMapper.generateSensorMap(inferencePreferences, app.getSensorsUsed());
+
+		for (SensorType sensor : sensorActionMap.keySet()) {
+			SensorTypeRule sensorRule = null;
+
+			for (SensorTypeRule curSensorRule : sensorRules) {
+				if (curSensorRule.getSensorType().equals(sensor)) {
+					sensorRule = curSensorRule;
+				}
+			}
+
+			if (sensorActionMap.get(sensor) == InferenceSensorMapper.ALLOW) {
+				sensorRule.makeAllowed();
+			} else {
+				sensorRule.makeDisallowed();
+			}
+		}
 	} // }}}
 
 	private ViewGroup setupSensors () { // {{{
@@ -841,7 +880,7 @@ public class AppDetailFragment extends Fragment {
 			}
 		}
 
-		JSONArray serializedInferenceRules = state.getJSONArray("sensor_rules");
+		JSONArray serializedInferenceRules = state.getJSONArray("inference_rules");
 		for (int iRuleIdx = 0; iRuleIdx < serializedInferenceRules.length(); iRuleIdx++) {
 			// make sure we have the right infernece before restoring the rule gui state...
 			for (int ruleIdx = 0; ruleIdx < inferenceRules.size(); ruleIdx++) {

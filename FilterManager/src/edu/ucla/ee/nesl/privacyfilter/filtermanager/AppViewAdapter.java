@@ -39,16 +39,27 @@ public class AppViewAdapter extends ArrayAdapter<AppFilterData> {
 		((ImageView) view.findViewById(R.id.app_list_entry_icon)).setImageDrawable(app.getIcon());
 		((TextView) view.findViewById(R.id.app_list_entry_title)).setText(app.toString());
 
+		String usageMessage = "";
+
 		int numSensorsUsed = app.getSensorsUsed().size();
-		String plural = "s";
+		String sensorPlural = "s";
 		if (numSensorsUsed == 1) {
-			plural = "";
+			sensorPlural = "";
 		}
-		String sensorUseMessage = "";
+
+		int numInferences = app.getInferences().size();
+		String inferencePlural = "s";
+		if (numInferences == 1) {
+			inferencePlural = "";
+		}
+
+		if (numInferences > 0) {
+			usageMessage += Integer.toString(numInferences) + " inference" + inferencePlural + " via ";
+		}
 		if (numSensorsUsed > 0) {
-			sensorUseMessage = Integer.toString(numSensorsUsed) + " sensor" + plural + " used";
+			usageMessage += Integer.toString(numSensorsUsed) + " sensor" + sensorPlural;
 		}
-		((TextView) view.findViewById(R.id.app_list_entry_subtitle)).setText(sensorUseMessage);
+		((TextView) view.findViewById(R.id.app_list_entry_subtitle)).setText(usageMessage);
 		//((TextView) view.findViewById(R.id.app_list_entry_status)).setText("BASE");
 
 		return view;

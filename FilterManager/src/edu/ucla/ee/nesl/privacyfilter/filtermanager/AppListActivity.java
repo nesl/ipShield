@@ -3,6 +3,8 @@ package edu.ucla.ee.nesl.privacyfilter.filtermanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.content.SharedPreferences;
+
 import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppId;
 
 
@@ -25,6 +27,8 @@ import edu.ucla.ee.nesl.privacyfilter.filtermanager.models.AppId;
 public class AppListActivity extends FragmentActivity
 		implements AppListFragment.Callbacks {
 
+	public static final boolean CLEAR_PREFS_ON_STARTUP = false;
+
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -35,6 +39,13 @@ public class AppListActivity extends FragmentActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
+
+		if (CLEAR_PREFS_ON_STARTUP) {
+			SharedPreferences prefs = getSharedPreferences("app_gui_states", MODE_PRIVATE);
+			SharedPreferences.Editor prefsEditor = prefs.edit();
+			prefsEditor.clear();
+			prefsEditor.apply();
+		}
 
 		if (findViewById(R.id.app_detail_container) != null) {
 			// The detail container view will be present only in the

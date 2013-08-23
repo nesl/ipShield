@@ -113,8 +113,8 @@ public final class R {
         public static final int constant_max_length=0x7f040003;
         public static final int days=0x7f04000b;
         public static final int decimal_separator=0x7f040009;
-        public static final int fragment_app_detail_inference_action_blacklist=0x7f040013;
-        public static final int fragment_app_detail_inference_action_whitelist=0x7f040012;
+        public static final int fragment_app_detail_inference_action_allow=0x7f040012;
+        public static final int fragment_app_detail_inference_action_disallow=0x7f040013;
         public static final int fragment_app_detail_viewtoggle_showinginferences=0x7f040010;
         public static final int fragment_app_detail_viewtoggle_showingsensors=0x7f040011;
         public static final int hours=0x7f04000c;
