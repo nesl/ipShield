@@ -26,7 +26,7 @@
 		<LinearLayout
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_weight=".85"
+			android:layout_weight=".78"
 			android:orientation="vertical"
 		>
 			<TextView
@@ -47,18 +47,20 @@
 				android:orientation="vertical"
 			/>
 		</LinearLayout>
-		
+
 		<TextView
+			android:id="@+id/fragment_app_detail_inference_action"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_weight=".15"
+			android:layout_weight=".22"
 			android:paddingTop="6dp"
 			android:paddingBottom="6dp"
 			android:textSize="18sp"
 			android:gravity="center"
 			android:layout_gravity="center_vertical"
+			android:clickable="true"
 			android:background="@drawable/back"
-			android:text="OK"
+			android:text="@string/fragment_app_detail_inference_action_whitelist"
 		/>
 	</LinearLayout>
 </LinearLayout>

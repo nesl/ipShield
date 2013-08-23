@@ -38,4 +38,7 @@
 
 		<string name="fragment_app_detail_viewtoggle_showinginferences"><u>In</u> S</string>
 		<string name="fragment_app_detail_viewtoggle_showingsensors">In <u>S</u></string>
+
+		<string name="fragment_app_detail_inference_action_whitelist">Allowed</string>
+		<string name="fragment_app_detail_inference_action_blacklist">Blocked</string>
 </resources>

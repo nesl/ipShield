@@ -160,8 +160,10 @@ public class AppDetailFragment extends Fragment {
 
 		// }}}
 
-		protected SensorTypeRule (SensorType sensorType) {
+		protected SensorTypeRule (SensorType sensorType, View ruleView) {
 			this.sensorType = sensorType;
+
+			setView(ruleView);
 		}
 
 		public SensorType getSensorType() {
@@ -504,26 +506,137 @@ public class AppDetailFragment extends Fragment {
 			toHourView.setText(state.getString("timing_tohour"));
 			toMinuteView.setText(state.getString("timing_tominute"));
 		} // }}}
+
+		public void makeAllowed () { // {{{
+			this.ruleActionView.setSelection(0); // 0 for "normal", i.e. passthrough/allow
+		} // }}}
+		public void makeDisallowed () { // {{{
+			this.ruleActionView.setSelection(1); // 1 for "suppress", i.e. disallow/block
+
+			for (int day = 0; day < 7; day++) {
+				this.dayOfWeekViews[day].setChecked(true);
+			}
+
+			this.fromHourView.setText("00");
+			this.toHourView.setText("00");
+			this.fromMinuteView.setText("00");
+			this.toMinuteView.setText("00");
+		} // }}}
+	}
+
+	// }}}
+	// InferenceRule {{{
+
+	// represents a single stipulation about what to do with one inference re the
+	// app in question
+	// i.e., one "blacklist/whitelist rule" so to speak
+
+	public class InferenceRule {
+		public static final int WHITELIST = 0;
+		public static final int BLACKLIST = 1;
+		private Inference inference;
+		private int selectedAction = WHITELIST;
+
+		// View members {{{
+
+		private View ruleView;
+		private TextView actionView;
+
+		// }}}
+
+		protected InferenceRule (Inference inference, View ruleView) {
+			this.inference = inference;
+
+			setView(ruleView);
+		}
+
+		public Inference getInference() {
+			return inference;
+		}
+
+		private void setupActionToggler () {
+			this.actionView = (TextView) ruleView.findViewById(R.id.fragment_app_detail_inference_action);
+
+			this.actionView.setOnClickListener(new View.OnClickListener () {
+				public void onClick (View v) {
+					if (getSelectedAction() == BLACKLIST) {
+						setSelectedAction(WHITELIST);
+					} else {
+						setSelectedAction(BLACKLIST);
+					}
+				}
+			});
+		}
+
+		protected void setView (View ruleView) { // {{{
+			this.ruleView = ruleView;
+
+			((TextView) ruleView.findViewById(R.id.fragment_app_detail_inference_name)).setText(inference.getName());
+
+			for (InferenceMethod method : inference.getInferenceMethods()) {
+				String infDesc = Double.toString(method.getAccuracy()) + "% accuracy using: ";
+
+				for (SensorType sensor : method.getSensorsRequired()) {
+					infDesc += "\n\t* " + sensor.getName();
+				}
+
+				TextView methTV = new TextView(getActivity());
+				methTV.setText(infDesc);
+				((ViewGroup) ruleView.findViewById(R.id.fragment_app_detail_inference_methods)).addView(methTV);
+			}
+
+			setupActionToggler();
+		} // }}}
+
+		public int getSelectedAction () { // {{{
+			return selectedAction;
+		} // }}}
+		public void setSelectedAction (int action) { // {{{
+			selectedAction = action;
+
+			switch (action) {
+				case WHITELIST:
+					actionView.setText(R.string.fragment_app_detail_inference_action_whitelist);
+					break;
+				case BLACKLIST:
+					actionView.setText(R.string.fragment_app_detail_inference_action_blacklist);
+					break;
+			}
+		} // }}}
+
+		protected JSONObject saveGuiState () throws JSONException { // {{{
+			JSONObject state = new JSONObject();
+
+			// make note of inference type
+			state.put("inference_id", inference.getInferenceId());
+
+			state.put("selected_action", getSelectedAction());
+
+			return state;
+		} // }}}
+		protected void restoreGuiState (JSONObject state) throws JSONException { // {{{
+			setSelectedAction(state.getInt("selected_action"));
+		} // }}}
 	}
 
 	// }}}
 
-	AppFilterData app; // the app whose data this fragment is open for editing
+	AppFilterData app; // the app whose privacy settings we're configuring on this screen
 
 	View rootView;
 
 	ViewGroup sensorViews; // the view containing the sensors
-	ArrayList<SensorTypeRule> rules = new ArrayList<SensorTypeRule>();
+	ArrayList<SensorTypeRule> sensorRules = new ArrayList<SensorTypeRule>();
 
 	ViewGroup inferenceViews; // the view containing the inferences
-	
+	ArrayList<InferenceRule> inferenceRules = new ArrayList<InferenceRule>();
 
 	// this method generates a protobuf in base64 string form representing the app
 	public String genProtobuf64 () { // {{{
 		FirewallConfigMessage.FirewallConfig.Builder fwBuilder = FirewallConfigMessage.FirewallConfig.newBuilder();
 		
-		for (int sTypeIdx = 0; sTypeIdx < rules.size(); sTypeIdx++) {
-			FirewallConfigMessage.Rule curRule = rules.get(sTypeIdx).genRule();
+		for (int sTypeIdx = 0; sTypeIdx < sensorRules.size(); sTypeIdx++) {
+			FirewallConfigMessage.Rule curRule = sensorRules.get(sTypeIdx).genRule();
 			fwBuilder.addRule(curRule);
 		}
 
@@ -541,14 +654,13 @@ public class AppDetailFragment extends Fragment {
 
 		// for each sensor type...
 		for (SensorType sensorType : app.getSensorsUsed()) {
-			// create a rule for this sensor type
-			SensorTypeRule rule = new SensorTypeRule(sensorType);
-			
 			//prepare a View for editing of the rule for this sensor
 			ViewGroup ruleView = (ViewGroup) sensorInflater.inflate(R.layout.fragment_app_detail_sensor, sensorViews, false);
-			rule.setView(ruleView);
 
-			rules.add(rule);
+			// create a rule for this sensor type
+			SensorTypeRule rule = new SensorTypeRule(sensorType, ruleView);
+
+			sensorRules.add(rule);
 			sensorViews.addView(ruleView);
 		}
 
@@ -568,23 +680,15 @@ public class AppDetailFragment extends Fragment {
 
 		LayoutInflater infInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+		// for each inference...
 		for (Inference inference : app.getInferences()) {
+			// create a View for editing the rule for this inference
 			ViewGroup infView = (ViewGroup) infInflater.inflate(R.layout.fragment_app_detail_inference, inferenceViews, false);
 
-			((TextView) infView.findViewById(R.id.fragment_app_detail_inference_name)).setText(inference.getName());
+			// create a rule for this inference
+			InferenceRule rule = new InferenceRule(inference, infView);
 
-			for (InferenceMethod method : inference.getInferenceMethods()) {
-				String infDesc = Double.toString(method.getAccuracy()) + "% accuracy using: ";
-
-				for (SensorType sensor : method.getSensorsRequired()) {
-					infDesc += "\n\t* " + sensor.getName();
-				}
-
-				TextView methTV = new TextView(getActivity());
-				methTV.setText(infDesc);
-				((ViewGroup) infView.findViewById(R.id.fragment_app_detail_inference_methods)).addView(methTV);
-			}
-
+			inferenceRules.add(rule);
 			inferenceViews.addView(infView);
 		}
 
@@ -599,8 +703,20 @@ public class AppDetailFragment extends Fragment {
 
 		return inferenceViews;
 	} // }}}
-	private void setupApplyButton () { // {{{
+	private void sendFCMData (String base64Data) { // {{{
+				FirewallConfigManager fwMgr = (FirewallConfigManager) getActivity().getSystemService(Context.FIREWALLCONFIG_SERVICE);
+				fwMgr.setFirewallConfig(base64Data);
+	} // }}}
+	private void setupApplyButtons () { // {{{
 		((Button) rootView.findViewById(R.id.fragment_app_detail_apply_sensors)).setOnClickListener(new View.OnClickListener () {
+			public void onClick (View v) {
+				sendFCMData(genProtobuf64());
+				getActivity().finish();
+			}
+		});
+
+		// the "inference" apply button really just calls the "sensor" apply button... there are two buttons simply because the layout requires it
+		((Button) rootView.findViewById(R.id.fragment_app_detail_apply_inferences)).setOnClickListener(new View.OnClickListener () {
 			public void onClick (View v) {
 				String serializedFirewallConfigProto = genProtobuf64();
 
@@ -663,7 +779,7 @@ public class AppDetailFragment extends Fragment {
 
 		sensorViews = setupSensors();
 		inferenceViews = setupInferences();
-		setupApplyButton();
+		setupApplyButtons();
 		setupToggler();
 
 		return rootView;
@@ -686,12 +802,17 @@ public class AppDetailFragment extends Fragment {
 		
 		state.put("filtermanager_version", fmVersionName);
 
-		JSONArray serializedRules = new JSONArray();
-		for (SensorTypeRule rule : rules) {
-			serializedRules.put(rule.saveGuiState());
+		JSONArray serializedSensorRules = new JSONArray();
+		for (SensorTypeRule sRule : sensorRules) {
+			serializedSensorRules.put(sRule.saveGuiState());
 		}
+		state.put("sensor_rules", serializedSensorRules);
 
-		state.put("rules", serializedRules);
+		JSONArray serializedInferenceRules = new JSONArray();
+		for (InferenceRule iRule : inferenceRules) {
+			serializedInferenceRules.put(iRule.saveGuiState());
+		}
+		state.put("inference_rules", serializedInferenceRules);
 
 		return state;
 	} // }}}
@@ -710,13 +831,22 @@ public class AppDetailFragment extends Fragment {
 			return;
 		}
 
-		JSONArray serializedRules = state.getJSONArray("rules");
-
-		for (int sRuleIdx = 0; sRuleIdx < serializedRules.length(); sRuleIdx++) {
+		JSONArray serializedSensorRules = state.getJSONArray("sensor_rules");
+		for (int sRuleIdx = 0; sRuleIdx < serializedSensorRules.length(); sRuleIdx++) {
 			// make sure we have the right sensor before restoring the rule gui state...
-			for (int ruleIdx = 0; ruleIdx < rules.size(); ruleIdx++) {
-				if (rules.get(ruleIdx).getSensorType().getAndroidId() == serializedRules.getJSONObject(sRuleIdx).getInt("android_sensor_id")) {
-					rules.get(ruleIdx).restoreGuiState(serializedRules.getJSONObject(sRuleIdx));
+			for (int ruleIdx = 0; ruleIdx < sensorRules.size(); ruleIdx++) {
+				if (sensorRules.get(ruleIdx).getSensorType().getAndroidId() == serializedSensorRules.getJSONObject(sRuleIdx).getInt("android_sensor_id")) {
+					sensorRules.get(ruleIdx).restoreGuiState(serializedSensorRules.getJSONObject(sRuleIdx));
+				}
+			}
+		}
+
+		JSONArray serializedInferenceRules = state.getJSONArray("sensor_rules");
+		for (int iRuleIdx = 0; iRuleIdx < serializedInferenceRules.length(); iRuleIdx++) {
+			// make sure we have the right infernece before restoring the rule gui state...
+			for (int ruleIdx = 0; ruleIdx < inferenceRules.size(); ruleIdx++) {
+				if (inferenceRules.get(ruleIdx).getInference().getInferenceId() == serializedInferenceRules.getJSONObject(iRuleIdx).getInt("inference_id")) {
+					inferenceRules.get(ruleIdx).restoreGuiState(serializedInferenceRules.getJSONObject(iRuleIdx));
 				}
 			}
 		}

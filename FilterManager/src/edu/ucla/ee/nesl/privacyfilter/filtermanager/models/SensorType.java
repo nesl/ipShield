@@ -52,13 +52,13 @@ public class SensorType {
 		/* 0x11 */ new AndroidSensorIdData("Significant motion", new String[]{"Motion"}, new String[]{"unitless"})
 	}; // }}}
 
-	public boolean equals (SensorType s) { // {{{
-		// for now we are only concerning ourselves with sensors of which the android API is aware
-		return (this.androidId == s.androidId);
-	} // }}}
-	public int hashCode () { // {{{
-		return this.androidId;
-	} // }}}
+//	public boolean equals (SensorType s) { // {{{
+//		// for now we are only concerning ourselves with sensors of which the android API is aware
+//		return (this.androidId == s.androidId);
+//	} // }}}
+//	public int hashCode () { // {{{
+//		return this.androidId;
+//	} // }}}
 
 	private SensorType () { // this class should not be instantiated directly {{{
 	} /// }}}
