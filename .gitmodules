@@ -1,3 +1,6 @@
 [submodule "FilterManager"]
 	path = FilterManager
 	url = git@github.com:nesl/FilterManager.git
+[submodule "RuleGenerator"]
+	path = RuleGenerator
+	url = git@github.com:nesl/PrivacyRuleGenerator.git
