@@ -4,3 +4,6 @@
 [submodule "RuleGenerator"]
 	path = RuleGenerator
 	url = git@github.com:nesl/PrivacyRuleGenerator.git
+[submodule "SensorRateTest"]
+	path = SensorRateTest
+	url = git@github.com:chenguangshen/SensorTest.git
