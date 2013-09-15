@@ -7,3 +7,6 @@
 [submodule "SensorRateTest"]
 	path = SensorRateTest
 	url = git@github.com:chenguangshen/SensorTest.git
+[submodule "SensorDump"]
+	path = SensorDump
+	url = git@github.com:nesl/SensorDump.git
