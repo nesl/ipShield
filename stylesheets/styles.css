@@ -354,3 +354,12 @@ footer p + p {
     content: 'at http://github.com/';
   }
 }
+
+#links {
+	text-align: left;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+#links a + a {
+	padding-left: 20px;
+}

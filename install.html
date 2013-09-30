@@ -19,31 +19,64 @@
       <header>
         <h1><a href="index.html">ipShield</a></h1>
         <p><a href="index.html">Context-aware sensor privacy for Android</a></p>
-        <p class="view"><a href="https://github.com/nesl/PrivacyFilterManager">View the Project on GitHub <small>nesl/PrivacyFilterManager</small></a></p>
+        <p class="view"><a href="https://github.com/nesl/FilterManager">View the Project on GitHub <small>nesl/FilterManager</small></a></p>
         <ul>
-          <li><a href="https://github.com/nesl/PrivacyFilterManager/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/nesl/PrivacyFilterManager/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/nesl/PrivacyFilterManager">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/nesl/FilterManager/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nesl/FilterManager/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nesl/FilterManager">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
 			<div id="links">
+				<a href="index.html">About</a>
 				<a href="screenshots.html">Screenshots</a>
 				<a href="install.html">Installation</a>
 			</div>
       <section>
-        <p><strong>ipShield</strong> gives you <strong>richer privacy control</strong> over sensor data on Android phones.  Right now, many of the common sensors on your phone&mdash;<strong>along with the information they yield</strong>&mdash;go unpoliced by the OS's data protection schemes.  ipShield takes advantage of Android's virtualized execution environment to give you control over <strong>who can access your sensor information</strong> and <strong>how much they can see</strong>.</p>
+				<h3>Installation</h3>
+				<ol>
+					<li><a href="http://source.android.com/source/initializing.html">Initialize your Android build environment</a></li>
 
-        <p>ipShield&hellip;</p>
-				<ul>
-					<li><strong>monitors</strong> sensors used by the apps on your phone</li>
-					<li><strong>assesses</strong> the risks this data can expose you to</li>
-					<li><strong>recommends</strong> a course of action to minimize those risks</li>
-					<li><strong>enables</strong> you to choose which risks are worth taking, and provides fine-grained control over how sensor data should be passed to each app</li>
-				</ul>
-      </section>
-      <section>
-				<h3>How to get it</h3>
-        <p>ipShield consists of two compontents: a background service, and an Android app that allows you to talk to that service.  The background service must be installed by <strong>patching the operating system kernel</strong>.  The app may be downloaded or installed via Google Play.</p>
+					<li><a href="http://source.android.com/source/downloading.html">Install the repo tool and set up a working directory</a></li>
+
+					<li>Download the manifest and other information corresponding to the <code>4.2.2_r1</code> branch.  You will now have a <code>.repo/</code> directory.  Run the following:
+					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ repo init -u https://android.googlesource.com/platform/manifest \
+    -b android-4.2.2_r1</code></pre>
+					</li>
+
+					<li>In the <code>.repo/</code> directory do the following:
+						<ol>
+							<li>Create a directory named <code>local_manifests/</code></li>
+							<li>Place the file <code>local_manifest.xml</code> in the <code>local_manifests/</code> directory.
+						</ol>
+					</li>
+
+					<li>Do a repo sync to download the source. You should now have all the
+changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
+
+					<li>To perform a complete build, from the root of the installed directory, run the following:
+					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
+$ lunch 11
+$ make -j4</code></pre>
+					</li>
+
+					<li>Assuming the environment variables were set up correction (using <code>envsetup.sh</code>), you should now be able to flash any compatible rooted phone with the new image like so:
+					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ adb reboot bootloader
+$ fastboot -w flashall</code></pre>
+
+					You may have to edit <code>local_manifest.xml</code> to contain the following:
+					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>&lt;manifest&gt;
+    &lt;remote name="github" fetch="https://github.com" /&gt;
+    &lt;remove-project name="platform/frameworks/native" /&gt;
+    &lt;project path="frameworks/native" remote="github"
+        name="nesl/platform_frameworks_native"
+        revision="refs/tags/android-4.2.2_r1" /&gt;
+    &lt;remove-project name="platform/frameworks/base" /&gt;
+    &lt;project path="frameworks/base" remote="github"
+        name="nesl/platform_frameworks_base"
+        revision="refs/tags/android-4.2.2_r1" /&gt;
+&lt;/manifest&gt;</code></pre>
+					</li>
+				</ol>
       </section>
     </div>
     <footer>
