@@ -10,3 +10,6 @@
 [submodule "SensorDump"]
 	path = SensorDump
 	url = git@github.com:nesl/SensorDump.git
+[submodule "platform_frameworks_native"]
+	path = platform_frameworks_native
+	url = git@github.com:nesl/platform_frameworks_native.git
