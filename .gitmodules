@@ -13,3 +13,6 @@
 [submodule "platform_frameworks_native"]
 	path = platform_frameworks_native
 	url = git@github.com:nesl/platform_frameworks_native.git
+[submodule "platform_frameworks_base"]
+	path = platform_frameworks_base
+	url = git@github.com:nesl/platform_frameworks_base.git
