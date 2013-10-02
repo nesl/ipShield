@@ -53,6 +53,13 @@
 					<li>Do a repo sync to download the source. You should now have all the
 changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
 
+                                        <li>Pull the source code.
+                                        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd frameworks/base
+$ git checkout -b jb-privacy remotes/github/jb-privacy
+$ cd ../native
+$ git checkout -b jb-privacy remotes/github/jb-privacy
+$ cd ../..</code></pre>
+                                        </li>
 					<li>To perform a complete build, from the root of the installed directory, run the following:
 					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
 $ lunch 11
