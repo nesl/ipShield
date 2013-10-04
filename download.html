@@ -35,31 +35,33 @@
         <a href="contact.html">Contact us</a>
 			</div>
       <section>
-        <p><strong>ipShield</strong> gives you <strong>richer privacy control</strong> over sensor data on your Android phone.  Right now, many of the common sensors on Android phones&mdash;<strong>along with the information they can yield about your life</strong>&mdash;go unpoliced by the OS's data protection schemes.  ipShield takes advantage of Android's virtualized execution environment to give you control over <strong>who can access your sensor information</strong> and <strong>how much they can see</strong>.</p>
-
-        <p>ipShield&hellip;</p>
-				<ul>
-					<li><strong>monitors</strong> sensors used by the apps on your phone</li>
-					<li><strong>assesses</strong> the risks this data can expose you to</li>
-					<li><strong>recommends</strong> a course of action to minimize those risks</li>
-					<li><strong>enables</strong> you to choose which risks are worth taking, and provides fine-grained control over how sensor data should be passed to each app</li>
-				</ul>
+       <h3>Prebuit image for Nexus 4</h3>
+       <p>Link to tarball</p>
+       <h3>Firewall Manager App</h3>
+       <p>Link to apk here</p>
+       <p>Note that this app will only work on the ipShield AOSP image./p>
       </section>
       <section>
-				<h3>How to get it</h3>
-        <p>ipShield is built on Android Open Source Project (AOSP
-        4.2.2_r1). It comes with a modified Android image, as well
-        as a front-end manager app to interact with the underlying
-        firewall services.
+        <h3>Flash prebuilt image to your Nexus 4</h3>
+        <p>After downloding our prebuit image for Nexus 4,
+          you should unlock the bootloader of your phone:
         </p>
+       <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
+          $ adb reboot bootloader
+          $ fastboot devices
+          $ fastboot oem unlock
+        </code></pre>
         <p>
-        To install ipShield on your phone, please go to the 
-        <a href="install.html">Download</a> page to get the 
-        prebuilt ipShield Android image for Google Nexus 4
-        and the front-end manager app. You can also build
-        out patched version of AOSP from scratch by following
-        the instructions in <a href="install.html">Build</a>.
-        </p>
+          Then use the following commands to flash the image
+          (Please understand the risk of flashing your phone,
+          and make sure to do back-up of important data):</p>
+        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
+          $ tar zxvf ipSheild-AOSP.tar.gz
+          $ cd ipSield-AOSP
+          $ export $ANDROID_PRODUCT_PATH=$PWD
+          $ adb reboot bootloader
+          $ fastboot -w flashall
+        </code></pre>
       </section>
     </div>
     <footer>

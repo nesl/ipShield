@@ -26,12 +26,14 @@
           <li><a href="https://github.com/nesl/FilterManager">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
-			<div id="links">
-				<a href="index.html">About</a>
-				<a href="screenshots.html">Screenshots</a>
-				<a href="install.html">Installation</a>
+      <div id="links">
+        <a href="index.html">About</a>
+        <a href="screenshots.html">Screenshots</a>
+        <a href="download.html">Download</a>
+        <a href="install.html">Build</a>
         <a href="infdb.html">Inference DB</a>
-			</div>
+        <a href="contact.html">Contact us</a>
+      </div>
       <section>
 				<h3>Installation</h3>
 				<ol>
@@ -72,7 +74,8 @@ $ make -j4</code></pre>
 $ fastboot -w flashall</code></pre>
 
 					You may have to edit <code>local_manifest.xml</code> to contain the following:
-					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>&lt;manifest&gt;
+					<pre style="margin-top: 10px; margin-bottom: 10px;">
+            <code>&lt;manifest&gt;
     &lt;remote name="github" fetch="https://github.com" /&gt;
     &lt;remove-project name="platform/frameworks/native" /&gt;
     &lt;project path="frameworks/native" remote="github"
@@ -88,7 +91,7 @@ $ fastboot -w flashall</code></pre>
       </section>
     </div>
     <footer>
-      <p>Project maintained by <a href="https://github.com/nesl">nesl</a></p>
+      <p>Project developed by <a href="http://nesl.ee.ucla.edu/">nesl</a></p>
       <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
     </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
