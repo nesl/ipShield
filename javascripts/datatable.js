@@ -25,9 +25,11 @@ $(document).ready(function() {
             [ "[4]", "EmotionSense: a mobile phones based adaptive platform for experimental social psychology research", "UbiComp'10" ]
         ],
         "aoColumns": [
-            { "sTitle": "No." },
-            { "sTitle": "Name" },
-            { "sTitle": "Venue" }
-        ]
+            { "sWidth": "5%" , "sTitle": "No." },
+            { "sWidth": "85%" , "sTitle": "Name" },
+            { "sWidth": "10%" , "sTitle": "Venue" }
+        ],
+        "bAutoWidth": false,
+        "aaSorting": [[2, 'asc']]
     } ); 
 } );
