@@ -14,7 +14,8 @@ $(document).ready(function() {
             { "sTitle": "Context" },
             { "sTitle": "Accuracy"},
             { "sTitle": "Reference"}
-        ]
+        ], 
+        "aaSorting": [[4, 'asc']]
     } );   
 
     $('#ref').dataTable( {
@@ -30,6 +31,7 @@ $(document).ready(function() {
             { "sWidth": "10%" , "sTitle": "Venue" }
         ],
         "bAutoWidth": false,
-        "aaSorting": [[2, 'asc']]
+        "aaSorting": [[0, 'asc']]
+        
     } ); 
 } );
