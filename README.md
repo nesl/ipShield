@@ -1,1 +1,1 @@
-Front end app for sensor firewall.
+ipShield - A framework for enforcing context-aware privacy
