@@ -7,3 +7,6 @@
 [submodule "platform_frameworks_base"]
 	path = platform_frameworks_base
 	url = git@github.com:nesl/platform_frameworks_base.git
+[submodule "FirewallManager"]
+	path = FirewallManager
+	url = git@github.com:nesl/FirewallManager.git
