@@ -50,32 +50,10 @@
 						<ol>
 							<li>Create a directory named <code>local_manifests/</code></li>
 							<li>Place the file <code>local_manifest.xml</code> in the <code>local_manifests/</code> directory.
-						</ol>
-					</li>
-
-					<li>Do a repo sync to download the source. You should now have all the
-changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
-
-                                        <li>Pull the source code.
-                                        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd frameworks/base
-$ git checkout -b jb-privacy remotes/github/jb-privacy
-$ cd ../native
-$ git checkout -b jb-privacy remotes/github/jb-privacy
-$ cd ../..</code></pre>
-                                        </li>
-					<li>To perform a complete build, from the root of the installed directory, run the following:
-					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
-$ lunch 11
-$ make -j4</code></pre>
-					</li>
-
-					<li>Assuming the environment variables were set up correction (using <code>envsetup.sh</code>), you should now be able to flash any compatible rooted phone with the new image like so:
-					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ adb reboot bootloader
-$ fastboot -w flashall</code></pre>
-
-					You may have to edit <code>local_manifest.xml</code> to contain the following:
-					<pre style="margin-top: 10px; margin-bottom: 10px;">
-            <code>&lt;manifest&gt;
+                <p> In order to let the repo fetch the ipShiled changes from NESL github,
+                  you should edit <code>local_manifest.xml</code> to contain the following:
+          <pre style="margin-top: 10px; margin-bottom: 10px;">
+<code>&lt;manifest&gt;
     &lt;remote name="github" fetch="https://github.com" /&gt;
     &lt;remove-project name="platform/frameworks/native" /&gt;
     &lt;project path="frameworks/native" remote="github"
@@ -85,9 +63,63 @@ $ fastboot -w flashall</code></pre>
     &lt;project path="frameworks/base" remote="github"
         name="nesl/platform_frameworks_base"
         revision="refs/tags/android-4.2.2_r1" /&gt;
-&lt;/manifest&gt;</code></pre>
+&lt;/manifest&gt;</code></pre></p>
+						</ol>
+					</li>
+
+					<li>Do a repo sync to download the source. You should now have all the
+changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
+
+    <li>Pull the ipShield source code changes from NESL github.
+                                        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd frameworks/base
+$ git checkout -b jb-privacy remotes/github/jb-privacy
+$ cd ../native
+$ git checkout -b jb-privacy remotes/github/jb-privacy
+$ cd ../..</code></pre>
+        </li>
+        <li>
+        <p>Now you have all the source code in place, but you still need to get the non open-source part of AOSP i.e. some 3rd party drivers. Please go to <a href="https://developers.google.com/android/nexus/drivers">this page</a> to download
+        the patch for your device and apply them to the source folder.
+        </p>
+        <p>
+          <b>Please make sure you apply the binary driver patches before starting the build!</b>
+        </p>
+        </li>
+
+					<li>To perform a complete build, from the root of the installed directory, run the following:
+					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
+$ lunch 11
+$ make -j8</code></pre>
+<p>Note that you should adjust your <i>-j8</i> parameter according to the number of cores
+in your processor.</p>
 					</li>
 				</ol>
+      </section>
+      <section>
+        <h3>Flash the ipShield image</h3>
+
+        <p>To flash the ipShield image,
+          you should first unlock the bootloader of your phone,
+          if you have not done so before:
+        </p>
+       <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
+          $ adb reboot bootloader
+          $ fastboot devices
+          $ fastboot oem unlock
+        </code></pre>
+        <p>
+          Then use the following commands to flash the image
+          (Please understand the risk of flashing your phone,
+          and make sure to do back-up of important data):</p>
+        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
+          $ cd out/target/product/mako
+          $ export $ANDROID_PRODUCT_PATH=$PWD
+          $ adb reboot bootloader
+          $ fastboot -w flashall
+        </code></pre>
+         <p>
+          Then enjoy the ipShield features by installing the
+          FirewallManager front-end app <a href="download.html">here</a>. </p>
       </section>
     </div>
     <footer>
