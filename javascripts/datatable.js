@@ -9,6 +9,8 @@ $(document).ready(function() {
             [ "Accelerometer, Microphone, Bluetooth", "Emotion", "happy, sad, fear, anger, neutral", "--", "[4]" ],
             [ "Accelerometer", "Onscreen Taps", "Text entered on phone", "80%", "[5]"],
             [ "Accelerometer", "Location", "Location of device owner", "200m", "[6]"],
+            [ "Respiration Sensor (RIP)", "Conversation", "speaking, listening, quiet", "87%", "[7]"],
+            [ "Microphone", "Stress", "Onset of stress", "76%", "[8]" ]
         ],
         "aoColumns": [
             { "sTitle": "Sensor" },
@@ -27,7 +29,10 @@ $(document).ready(function() {
             [ "[3]", "Online Pose Classiﬁcation and Walking Speed Estimation using Handheld Devices", "UbiComp'12" ],
             [ "[4]", "EmotionSense: a mobile phones based adaptive platform for experimental social psychology research", "UbiComp'10" ],
             [ "[5]", "ACCessory: Password Inference using Accelerometers on Smartphones", "HotMobile'12" ],
-            [ "[6]", "ACComplice: Location Inference using Accelerometers on Smartphones", "COMSNETS'12" ]
+            [ "[6]", "ACComplice: Location Inference using Accelerometers on Smartphones", "COMSNETS'12" ],
+            [ "[7]", "mConverse: Inferring Conversation Episodes from Respiratory Measurements Collected in the Field", "Wireless Health'11" ],
+            [ "[8]", "StressSense: Detecting Stress in Unconstrained Acoustic Environments using Smartphones", "Ubicomp'12" ]
+
         ],
         "aoColumns": [
             { "sWidth": "5%" , "sTitle": "No." },
