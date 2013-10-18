@@ -7,6 +7,8 @@ $(document).ready(function() {
             [ "Accelerometer, Gyroscope", "Onscreen Taps", "Text entered on phone", "80%", "[2]" ],
             [ "Accelerometer", "Device placement", "bag, ear, hand, pocket", "99.6%", "[3]" ],
             [ "Accelerometer, Microphone, Bluetooth", "Emotion", "happy, sad, fear, anger, neutral", "--", "[4]" ],
+            [ "Accelerometer", "Onscreen Taps", "Text entered on phone", "80%", "[5]"],
+            [ "Accelerometer", "Location", "Location of device owner", "200m", "[6]"],
         ],
         "aoColumns": [
             { "sTitle": "Sensor" },
@@ -23,7 +25,9 @@ $(document).ready(function() {
             [ "[1]", "Using Mobile Phones to Determine Transportation Modes", "ACM TOSN" ],
             [ "[2]", "TapPrints: Your Finger Taps Have Fingerprints", "MobiSys'13" ],
             [ "[3]", "Online Pose Classiﬁcation and Walking Speed Estimation using Handheld Devices", "UbiComp'12" ],
-            [ "[4]", "EmotionSense: a mobile phones based adaptive platform for experimental social psychology research", "UbiComp'10" ]
+            [ "[4]", "EmotionSense: a mobile phones based adaptive platform for experimental social psychology research", "UbiComp'10" ],
+            [ "[5]", "ACCessory: Password Inference using Accelerometers on Smartphones", "HotMobile'12" ],
+            [ "[6]", "ACComplice: Location Inference using Accelerometers on Smartphones", "COMSNETS'12" ]
         ],
         "aoColumns": [
             { "sWidth": "5%" , "sTitle": "No." },
