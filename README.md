@@ -1,6 +1,15 @@
 ipShield - A framework for enforcing context-aware privacy
 
 --
+
+This repo contains the source code of the ipShield implementation proposed in:
+
+  "ipShield: A Framework For Enforcing Context-Aware Privacy"
+  
+  Supriyo Chakraborty, Chenguang Shen, Kasturi Rangan Raghavan, Yasser Shoukry, Matt Millar, and Mani Srivastava
+  
+  To appear in the 11th USENIX Symposium on Networked Systems Design and Implementation (NSDI'14), April 2014.
+
 Submodules:
 
 FirewallManager: Source code for the front-end app to control our firewall service.
