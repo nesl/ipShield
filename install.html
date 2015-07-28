@@ -1,19 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>ipShield by nesl</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <script>
+
+      $(function() {
+    //$("#accordion").accordion();
+        $('.build-head').click(function() {
+        $(this).next().toggle('slow');
+        return false;
+    }).next().hide();
+
+  });
+  </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-          <script>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>    <![endif]-->
+    <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -22,48 +36,123 @@
   ga('create', 'UA-49614065-1', 'nesl.github.io');
   ga('send', 'pageview');
 
-</script>
-  </head>
+</script> </head>
   <body>
     <div class="wrapper">
       <header>
         <h1><a href="index.html">ipShield</a></h1>
         <p><a href="index.html">Context-aware sensor privacy for Android</a></p>
-<!--         <p class="view"><a href="https://github.com/nesl/FilterManager">View the Project on GitHub <small>nesl/FilterManager</small></a></p>
-        <ul>
-          <li><a href="https://github.com/nesl/FilterManager/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/nesl/FilterManager/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/nesl/FilterManager">View On <strong>GitHub</strong></a></li>
-        </ul> -->
-      </header>
-      <div id="links">
-        <a href="index.html">Overview</a>
-        <a href="screenshots.html">Screenshots</a>
-        <a href="download.html">Download</a>
-        <a href="install.html">Build</a>
-        <a href="infdb.html">Inference DB</a>
-        <a href="contact.html">Contact us</a>
-      </div>
+        <!--         <p class="view"><a href="https://github.com/nesl/FilterManager">View the Project on GitHub <small>nesl/FilterManager</small></a></p>
+        <ul>          <li><a href="https://github.com/nesl/FilterManager/zipball/master">Download <strong>ZIP File</strong></a></li>          <li><a href="https://github.com/nesl/FilterManager/tarball/master">Download <strong>TAR Ball</strong></a></li>          <li><a href="https://github.com/nesl/FilterManager">View On <strong>GitHub</strong></a></li>
+        </ul> --> </header>
+      <div id="links"> <a href="index.html">Overview</a> <a href="screenshots.html">Screenshots</a>
+        <a href="download.html">Download</a> <a href="install.html">Build</a> <a
+          href="infdb.html">Inference
+          DB</a> <a href="contact.html">Contact us</a> </div>
       <section>
-				<h3>Build from source</h3>
-				<ol>
-					<li><a href="http://source.android.com/source/initializing.html">Initialize your Android build environment</a></li>
+        <div id="accordion">
+        <h3  class='build-head'><a href='#'>Build from source (Lollipop)</a></h3>
+        <div>
+        <ol>
+          <li><a href="http://source.android.com/source/initializing.html">Initialize
+              your Android build environment</a></li>
+          <li><a href="http://source.android.com/source/downloading.html">Install
+              the repo tool and set up a working directory</a></li>
+          <li>Download the manifest and other information corresponding to the corresponding
+            branch. You will now have a <code>.repo/</code> directory. Run the
+            following:
+             <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ repo init -u https://android.googlesource.com/platform/manifest \
+              -b android-5.1.0_r1
+</code></pre>
+            
+          </li>
+          <li>In the <code>.repo/</code> directory do the following:
+            <ol>
+              <li>Create a directory named <code>local_manifests/</code></li>
+              <li>Place the file <code>local_manifest.xml</code> in the <code>local_manifests/</code>
+                directory.
+                <p> In order to let the repo fetch the ipShiled changes from
+                  NESL github, you should edit <code>local_manifest.xml</code>
+                  to contain the following: </p>
+                <pre style="margin-top: 10px; margin-bottom: 10px;"><code>&lt;manifest&gt;
+    &lt;remote name="github" fetch="https://github.com" /&gt;
+    &lt;remove-project name="platform/frameworks/native" /&gt;
+    &lt;project path="frameworks/native" remote="github"
+        name="malzatnto/lollipop-ips-sensorservice"
+        revision="refs/tags/android-5.1.0_r1" /&gt;
+    &lt;remove-project name="platform/frameworks/base" /&gt;
+    &lt;project path="frameworks/base" remote="github"
+        name="malzantot/lollipop-ips-frameworks_base"
+        revision="refs/tags/android-5.1.0_r1" /&gt;
+    &lt;remove-project name="platform/external/sepolicy" /&gt;
+    &lt;project path="external/sepolicy" remote="github"
+        name="malzantot/lollipop-ips-sepolicy"
+        revision="refs/tags/android-5.1.0_r1" /&gt;
+    &lt;remove-project name="platform/system/core" /&gt;
+    &lt;project path="system/core" remote="github"
+        name="malzantot/lollipop-ips-libutils"
+        revision="refs/tags/android-5.1.0_r1" /&gt;
+&lt;/manifest&gt;</code></pre>
+              </li>
+            </ol>
+          </li>
+          <li>Do a repo sync to download the source. You should now have all the
+            changes for ipShield along with the code for <code>android-5.1.0_r1</code>.</li>
+          <li>Pull the ipShield source code changes from NESL github.
+            <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd  system/core
+$ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
+$ cd ../../external/sepolicy
+$ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
+$ cd ../../frameworks/base
+$ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
+$ cd ../native
+$ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
+$ cd ../..</code></pre>
+          </li>
+          <li>
+            <p>Now you have all the source code in place, but you still need to
+              get the non open-source part of AOSP i.e. some 3rd party drivers.
+              Please go to <a href="https://developers.google.com/android/nexus/drivers">this
+                page</a> to download the patch for your device and apply them to
+              the source folder. </p>
+            <p> <b>Please make sure you apply the binary driver patches before
+                starting the build!</b> </p>
+          </li>
+          <li>To perform a complete build, from the root of the installed
+            directory, run the following:
+            <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
+$ lunch 20
+$ make -j8</code></pre>
+            <p>Note that you should adjust your <i>-j8</i> parameter according
+              to the number of cores in your processor.</p>
+          </li>
+        </ol>
+      </div>
 
-					<li><a href="http://source.android.com/source/downloading.html">Install the repo tool and set up a working directory</a></li>
-
-					<li>Download the manifest and other information corresponding to the <code>4.2.2_r1</code> branch.  You will now have a <code>.repo/</code> directory.  Run the following:
-					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ repo init -u https://android.googlesource.com/platform/manifest \
+    <!-- Jellybean Instructions-->
+        <h3 class='build-head'><a href='#'> Build from source (Jellybean)</a></h3>
+        <div>
+        <ol>
+          <li><a href="http://source.android.com/source/initializing.html">Initialize
+              your Android build environment</a></li>
+          <li><a href="http://source.android.com/source/downloading.html">Install
+              the repo tool and set up a working directory</a></li>
+          <li>Download the manifest and other information corresponding to the corresponding
+            branch. You will now have a <code>.repo/</code> directory. Run the
+            following:
+             <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ repo init -u https://android.googlesource.com/platform/manifest \
     -b android-4.2.2_r1</code></pre>
-					</li>
-
-					<li>In the <code>.repo/</code> directory do the following:
-						<ol>
-							<li>Create a directory named <code>local_manifests/</code></li>
-							<li>Place the file <code>local_manifest.xml</code> in the <code>local_manifests/</code> directory.
-                <p> In order to let the repo fetch the ipShiled changes from NESL github,
-                  you should edit <code>local_manifest.xml</code> to contain the following:
-          <pre style="margin-top: 10px; margin-bottom: 10px;">
-<code>&lt;manifest&gt;
+            
+          </li>
+          <li>In the <code>.repo/</code> directory do the following:
+            <ol>
+              <li>Create a directory named <code>local_manifests/</code></li>
+              <li>Place the file <code>local_manifest.xml</code> in the <code>local_manifests/</code>
+                directory.
+                <p> In order to let the repo fetch the ipShiled changes from
+                  NESL github, you should edit <code>local_manifest.xml</code>
+                  to contain the following: </p>
+                <pre style="margin-top: 10px; margin-bottom: 10px;"><code>&lt;manifest&gt;
     &lt;remote name="github" fetch="https://github.com" /&gt;
     &lt;remove-project name="platform/frameworks/native" /&gt;
     &lt;project path="frameworks/native" remote="github"
@@ -73,74 +162,73 @@
     &lt;project path="frameworks/base" remote="github"
         name="nesl/platform_frameworks_base"
         revision="refs/tags/android-4.2.2_r1" /&gt;
-&lt;/manifest&gt;</code></pre></p>
-						</ol>
-					</li>
-
-					<li>Do a repo sync to download the source. You should now have all the
-changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
-
-    <li>Pull the ipShield source code changes from NESL github.
-                                        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd frameworks/base
+&lt;/manifest&gt;</code></pre>
+              </li>
+            </ol>
+          </li>
+          <li>Do a repo sync to download the source. You should now have all the
+            changes for ipShield along with the code for <code>4.2.2_r1</code>.</li>
+          <li>Pull the ipShield source code changes from NESL github.
+            <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd frameworks/base
 $ git checkout -b jb-privacy remotes/github/jb-privacy
 $ cd ../native
 $ git checkout -b jb-privacy remotes/github/jb-privacy
 $ cd ../..</code></pre>
-        </li>
-        <li>
-        <p>Now you have all the source code in place, but you still need to get the non open-source part of AOSP i.e. some 3rd party drivers. Please go to <a href="https://developers.google.com/android/nexus/drivers">this page</a> to download
-        the patch for your device and apply them to the source folder.
-        </p>
-        <p>
-          <b>Please make sure you apply the binary driver patches before starting the build!</b>
-        </p>
-        </li>
-
-					<li>To perform a complete build, from the root of the installed directory, run the following:
-					<pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
+          </li>
+          <li>
+            <p>Now you have all the source code in place, but you still need to
+              get the non open-source part of AOSP i.e. some 3rd party drivers.
+              Please go to <a href="https://developers.google.com/android/nexus/drivers">this
+                page</a> to download the patch for your device and apply them to
+              the source folder. </p>
+            <p> <b>Please make sure you apply the binary driver patches before
+                starting the build!</b> </p>
+          </li>
+          <li>To perform a complete build, from the root of the installed
+            directory, run the following:
+            <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
 $ lunch 11
 $ make -j8</code></pre>
-<p>Note that you should adjust your <i>-j8</i> parameter according to the number of cores
-in your processor.</p>
-					</li>
-				</ol>
+            <p>Note that you should adjust your <i>-j8</i> parameter according
+              to the number of cores in your processor.</p>
+          </li>
+        </ol>
+      </div>
+
+      </div>
       </section>
       <section>
         <h3>Flash the ipShield image</h3>
-
-        <p>To flash the ipShield image,
-          you should first unlock the bootloader of your phone,
-          if you have not done so before:
-        </p>
-       <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
+        <p>To flash the ipShield image, you should first unlock the bootloader
+          of your phone, if you have not done so before: </p>
+        <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
           $ adb reboot bootloader
           $ fastboot devices
           $ fastboot oem unlock
         </code></pre>
-        <p>
-          Then use the following commands to flash the image
-          (Please understand the risk of flashing your phone,
-          and make sure to do back-up of important data):</p>
+        <p> Then use the following commands to flash the image (Please
+          understand the risk of flashing your phone, and make sure to do
+          back-up of important data):</p>
         <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
           $ cd out/target/product/mako
           $ export $ANDROID_PRODUCT_PATH=$PWD
           $ adb reboot bootloader
           $ fastboot -w flashall
         </code></pre>
-         <p>
-          Then enjoy the ipShield features by installing the
-          FirewallManager front-end app <a href="download.html">here</a>. </p>
+        <p> Then enjoy the ipShield features by installing the FirewallManager
+          front-end app <a href="download.html">here</a>. </p>
       </section>
-
       <section>
         <h3>Install Google apps</h3>
-
-        <p> Please refer to <a href="http://wiki.cyanogenmod.org/w/Google_Apps">this page</a> for instructions about how to install Google apps (including the Play Store) on a phone with fresh AOSP.
-        </p>
+        <p> Please refer to <a href="http://wiki.cyanogenmod.org/w/Google_Apps">this
+            page</a> for instructions about how to install Google apps
+          (including the Play Store) on a phone with fresh AOSP. </p>
       </section>
     </div>
     <footer>
-      <p>Project developed by <a href="http://nesl.ee.ucla.edu/">NESL</a>, webpage maintained by <a href="mailto:cgshen@cs.ucla.edu">Chenguang Shen</a></p>
+      <p>Project developed by <a href="http://nesl.ee.ucla.edu/">NESL</a>,
+        webpage maintained by <a href="mailto:cgshen@cs.ucla.edu">Chenguang
+          Shen</a></p>
       <p>Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
     </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
