@@ -78,27 +78,27 @@
     &lt;remote name="github" fetch="https://github.com" /&gt;
     &lt;remove-project name="platform/frameworks/native" /&gt;
     &lt;project path="frameworks/native" remote="github"
-        name="malzatnto/lollipop-ips-sensorservice"
-        revision="refs/tags/android-5.1.0_r1" /&gt;
+        name="malzantot/lollipop-ips-sensorservice"
+        revision="lollipop-ipshield" /&gt;
     &lt;remove-project name="platform/frameworks/base" /&gt;
     &lt;project path="frameworks/base" remote="github"
         name="malzantot/lollipop-ips-frameworks_base"
-        revision="refs/tags/android-5.1.0_r1" /&gt;
+        revision="lollipop-ipshield" /&gt;
     &lt;remove-project name="platform/external/sepolicy" /&gt;
     &lt;project path="external/sepolicy" remote="github"
         name="malzantot/lollipop-ips-sepolicy"
-        revision="refs/tags/android-5.1.0_r1" /&gt;
+        revision="lollipop-ipshield" /&gt;
     &lt;remove-project name="platform/system/core" /&gt;
     &lt;project path="system/core" remote="github"
         name="malzantot/lollipop-ips-libutils"
-        revision="refs/tags/android-5.1.0_r1" /&gt;
+        revision="lollipop-ipshield" /&gt;
 &lt;/manifest&gt;</code></pre>
               </li>
             </ol>
           </li>
           <li>Do a repo sync to download the source. You should now have all the
             changes for ipShield along with the code for <code>android-5.1.0_r1</code>.</li>
-          <li>Pull the ipShield source code changes from NESL github.
+          <!-- <li>Pull the ipShield source code changes from NESL github.
             <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd  system/core
 $ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
 $ cd ../../external/sepolicy
@@ -109,6 +109,7 @@ $ cd ../native
 $ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
 $ cd ../..</code></pre>
           </li>
+        -->
           <li>
             <p>Now you have all the source code in place, but you still need to
               get the non open-source part of AOSP i.e. some 3rd party drivers.
