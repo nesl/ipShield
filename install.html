@@ -62,7 +62,7 @@
             branch. You will now have a <code>.repo/</code> directory. Run the
             following:
              <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ repo init -u https://android.googlesource.com/platform/manifest \
-              -b android-5.1.0_r1
+              -b android-5.0.0_r1
 </code></pre>
             
           </li>
@@ -97,7 +97,7 @@
             </ol>
           </li>
           <li>Do a repo sync to download the source. You should now have all the
-            changes for ipShield along with the code for <code>android-5.1.0_r1</code>.</li>
+            changes for ipShield along with the code for <code>android-5.0.0_r1</code>.</li>
           <!-- <li>Pull the ipShield source code changes from NESL github.
             <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ cd  system/core
 $ git checkout -b lollipop-ipshield remotes/github/lollipop-ipshield
@@ -123,6 +123,7 @@ $ cd ../..</code></pre>
             directory, run the following:
             <pre style="margin-top: 10px; margin-bottom: 10px;"><code>$ source build/envsetup.sh
 $ lunch 20
+$ make update-api
 $ make -j8</code></pre>
             <p>Note that you should adjust your <i>-j8</i> parameter according
               to the number of cores in your processor.</p>
@@ -212,7 +213,7 @@ $ make -j8</code></pre>
           back-up of important data):</p>
         <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
           $ cd out/target/product/mako
-          $ export $ANDROID_PRODUCT_PATH=$PWD
+          $ export $ANDROID_OUT_PATH=$PWD
           $ adb reboot bootloader
           $ fastboot -w flashall
         </code></pre>
