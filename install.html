@@ -213,7 +213,7 @@ $ make -j8</code></pre>
           back-up of important data):</p>
         <pre style="margin-top: 10px; margin-bottom: 10px;"><code>
           $ cd out/target/product/mako
-          $ export $ANDROID_OUT_PATH=$PWD
+          $ export ANDROID_OUT_PATH=$PWD
           $ adb reboot bootloader
           $ fastboot -w flashall
         </code></pre>
